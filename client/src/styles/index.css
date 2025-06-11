@@ -1,0 +1,14 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* Font imports */
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/500.css';
+@import '@fontsource/poppins/700.css';
+
+/* Local layers */
+@import './theme.css';
+@import './base.css';
+@import './typography.css';
+@import './utilities.css';
+@import './form.css';
