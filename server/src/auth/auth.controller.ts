@@ -50,9 +50,9 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'Logout successful' })
   async logout(
-    @Request() req: { user: { userId: string } },
+    @Request() req: { user: { id: string } },
   ): Promise<ApiResponseType<null>> {
-    await this.authService.logout(req.user.userId);
+    await this.authService.logout(req.user.id);
     return {
       message: 'Logout successful',
       data: null,
@@ -65,11 +65,11 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'Refresh token successful' })
   async refresh(
-    @Request() req: { user: { userId: string } },
+    @Request() req: { user: { id: string } },
     @Body() dto: RefreshTokenDto,
   ): Promise<ApiResponseType<any>> {
     const tokens = await this.authService.refreshTokens(
-      req.user.userId,
+      req.user.id,
       dto.refreshToken,
     );
     return {
@@ -84,9 +84,9 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'Authenticated user info' })
   async getMe(
-    @Request() req: { user: { userId: string } },
+    @Request() req: { user: { id: string } },
   ): Promise<ApiResponseType<SafeUser>> {
-    const user = await this.authService.getMe(req.user.userId);
+    const user = await this.authService.getMe(req.user.id);
     return {
       message: 'Authenticated user retrieved',
       data: user,

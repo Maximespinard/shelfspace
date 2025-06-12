@@ -18,6 +18,7 @@ import { Item } from './item.schema';
 import { ItemsService } from './items.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { ApiResponse as ApiResponseType } from 'src/interfaces/api-response.interface';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @ApiTags('Items')
 @ApiBearerAuth()
@@ -73,8 +74,9 @@ export class ItemsController {
   })
   async findAll(
     @Query() query: Record<string, any>,
+    @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<any>> {
-    const result = await this.itemsService.findAll(query);
+    const result = await this.itemsService.findAll(query, userId);
     return {
       message: 'Items retrieved successfully',
       data: result,
@@ -84,8 +86,11 @@ export class ItemsController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: 200, description: 'Get a single item' })
-  async findOne(@Param('id') id: string): Promise<ApiResponseType<Item>> {
-    const item = await this.itemsService.findById(id);
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<ApiResponseType<Item>> {
+    const item = await this.itemsService.findById(id, userId);
     return {
       message: 'Item retrieved successfully',
       data: item,
@@ -97,8 +102,9 @@ export class ItemsController {
   @ApiResponse({ status: 201, description: 'Create a new item' })
   async create(
     @Body() createItemDto: CreateItemDto,
+    @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Item>> {
-    const item = await this.itemsService.create(createItemDto);
+    const item = await this.itemsService.create(createItemDto, userId);
     return {
       message: 'Item created successfully',
       data: item,
@@ -111,8 +117,9 @@ export class ItemsController {
   async update(
     @Param('id') id: string,
     @Body() updateItemDto: UpdateItemDto,
+    @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Item>> {
-    const item = await this.itemsService.update(id, updateItemDto);
+    const item = await this.itemsService.update(id, updateItemDto, userId);
     return {
       message: 'Item updated successfully',
       data: item,
@@ -122,8 +129,11 @@ export class ItemsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({ status: 204, description: 'Delete an item' })
-  async remove(@Param('id') id: string): Promise<void> {
-    await this.itemsService.remove(id);
+  async remove(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<void> {
+    await this.itemsService.remove(id, userId);
     return;
   }
 }

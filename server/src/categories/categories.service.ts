@@ -18,16 +18,19 @@ export class CategoriesService {
     private readonly categoryModel: Model<CategoryDocument>,
   ) {}
 
-  async findAll(): Promise<Category[]> {
-    return this.categoryModel.find().sort({ name: 1 }).exec();
+  async findAll(userId: string): Promise<Category[]> {
+    return this.categoryModel.find({ user: userId }).sort({ name: 1 }).exec();
   }
 
-  async findOne(id: string): Promise<Category> {
+  async findOne(id: string, userId: string): Promise<Category> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException('Invalid category ID format');
     }
 
-    const category = await this.categoryModel.findById(id);
+    const category = await this.categoryModel.findOne({
+      _id: id,
+      user: userId,
+    });
     if (!category) {
       throw new NotFoundException(`Category with ID ${id} not found`);
     }
@@ -35,9 +38,15 @@ export class CategoriesService {
     return category;
   }
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+  async create(
+    createCategoryDto: CreateCategoryDto,
+    userId: string,
+  ): Promise<Category> {
     try {
-      const category = new this.categoryModel(createCategoryDto);
+      const category = new this.categoryModel({
+        ...createCategoryDto,
+        user: userId,
+      });
       return await category.save();
     } catch (err) {
       if (err instanceof MongoServerError && err.code === 11000) {
@@ -50,14 +59,12 @@ export class CategoriesService {
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
+    userId: string,
   ): Promise<Category> {
-    const category = await this.categoryModel.findByIdAndUpdate(
-      id,
+    const category = await this.categoryModel.findOneAndUpdate(
+      { _id: id, user: userId },
       updateCategoryDto,
-      {
-        new: true,
-        runValidators: true,
-      },
+      { new: true, runValidators: true },
     );
 
     if (!category) {
@@ -67,13 +74,14 @@ export class CategoriesService {
     return category;
   }
 
-  async remove(id: string): Promise<Category> {
-    const category = await this.categoryModel.findByIdAndDelete(id);
+  async remove(id: string, userId: string): Promise<void> {
+    const result = await this.categoryModel.deleteOne({
+      _id: id,
+      user: userId,
+    });
 
-    if (!category) {
+    if (result.deletedCount === 0) {
       throw new NotFoundException(`Category with ID ${id} not found`);
     }
-
-    return category;
   }
 }

@@ -17,6 +17,7 @@ import { Category } from './category.schema';
 import { CategoriesService } from './categories.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { ApiResponse as ApiResponseType } from 'src/interfaces/api-response.interface';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @ApiTags('Categories')
 @ApiBearerAuth()
@@ -28,8 +29,10 @@ export class CategoriesController {
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: 200, description: 'List of all categories' })
-  async findAll(): Promise<ApiResponseType<Category[]>> {
-    const categories = await this.categoriesService.findAll();
+  async findAll(
+    @CurrentUser('id') userId: string,
+  ): Promise<ApiResponseType<Category[]>> {
+    const categories = await this.categoriesService.findAll(userId);
     return {
       message: 'Categories retrieved successfully',
       data: categories,
@@ -41,8 +44,9 @@ export class CategoriesController {
   @ApiResponse({ status: 201, description: 'Category created' })
   async create(
     @Body() dto: CreateCategoryDto,
+    @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Category>> {
-    const category = await this.categoriesService.create(dto);
+    const category = await this.categoriesService.create(dto, userId);
     return {
       message: 'Category created successfully',
       data: category,
@@ -55,8 +59,9 @@ export class CategoriesController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateCategoryDto,
+    @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Category>> {
-    const updated = await this.categoriesService.update(id, dto);
+    const updated = await this.categoriesService.update(id, dto, userId);
     return {
       message: 'Category updated successfully',
       data: updated,
@@ -66,8 +71,11 @@ export class CategoriesController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({ status: 204, description: 'Category deleted' })
-  async remove(@Param('id') id: string): Promise<void> {
-    await this.categoriesService.remove(id);
+  async remove(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<void> {
+    await this.categoriesService.remove(id, userId);
     return;
   }
 }
