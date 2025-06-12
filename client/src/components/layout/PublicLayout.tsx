@@ -1,17 +1,15 @@
-import { type ReactNode } from 'react';
 import GradientWrapper from '@/components/ui/base/GradientWrapper';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import { Outlet } from 'react-router-dom';
 
-interface Props {
-  children: ReactNode;
-}
-
-const PublicLayout = ({ children }: Props) => {
+const PublicLayout = () => {
   return (
     <GradientWrapper>
       <Navbar />
-      <main className="pt-16 md:pt-20">{children}</main>
+      <main className="pt-16 md:pt-20">
+        <Outlet />
+      </main>
       <Footer />
     </GradientWrapper>
   );
