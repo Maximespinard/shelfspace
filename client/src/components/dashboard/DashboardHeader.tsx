@@ -13,11 +13,13 @@ import {
 import MotionDiv from '@/components/ui/animated/MotionDiv';
 import { useCategories } from '@/hooks/useCategories';
 import { useCategoryModal } from '@/hooks/useCategoryModal';
+import { useItemModal } from '@/hooks/useItemModal';
 
 const DashboardHeader = () => {
   const [sort, setSort] = useState('recent');
   const { categories } = useCategories();
-  const { open } = useCategoryModal();
+  const { open: openCategoryModal } = useCategoryModal();
+  const { open: openItemModal } = useItemModal();
 
   return (
     <Section>
@@ -55,7 +57,7 @@ const DashboardHeader = () => {
                 <div className="border-t my-1" />
                 <Button
                   variant="ghost"
-                  onClick={() => open('add')}
+                  onClick={() => openCategoryModal('add')}
                   className="w-full justify-start px-3 py-2 text-sm text-muted-foreground hover:text-foreground"
                 >
                   <Plus className="mr-2 size-4" />
@@ -68,7 +70,7 @@ const DashboardHeader = () => {
               variant="outline"
               size="sm"
               className="h-12"
-              onClick={() => open('add')}
+              onClick={() => openCategoryModal('add')}
             >
               <Settings className="w-4 h-4 mr-2" />
               Manage Categories
@@ -78,9 +80,7 @@ const DashboardHeader = () => {
               variant="default"
               size="sm"
               className="h-12 px-5"
-              onClick={() => {
-                // TODO: open item creation modal
-              }}
+              onClick={() => openItemModal('add')}
             >
               + Add New Item
             </Button>
