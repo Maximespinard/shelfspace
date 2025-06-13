@@ -5,7 +5,7 @@ export const registerSchema = z
     username: z
       .string()
       .min(3, 'Username must be at least 3 characters')
-      .max(20, 'Username cannot be longer than 30 characters'),
+      .max(20, 'Username cannot be longer than 20 characters'),
 
     email: z.string().email('Please enter a valid email address'),
 
@@ -22,3 +22,4 @@ export const registerSchema = z
   });
 
 export type RegisterSchema = z.infer<typeof registerSchema>;
+export type RegisterPayload = Omit<RegisterSchema, 'confirmPassword'>;

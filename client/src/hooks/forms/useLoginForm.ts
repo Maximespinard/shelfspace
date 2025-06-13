@@ -1,8 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type LoginSchema, loginSchema } from '@/schemas/login.schema';
+import {
+  type LoginPayload,
+  type LoginSchema,
+  loginSchema,
+} from '@/schemas/login.schema';
 
-export function useLoginForm(onSubmit: (data: LoginSchema) => void) {
+export function useLoginForm(onSubmit: (data: LoginPayload) => void) {
   const {
     register,
     handleSubmit,

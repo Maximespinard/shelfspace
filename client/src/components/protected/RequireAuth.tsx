@@ -1,8 +1,8 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useAuthStore } from '@/store/authStore';
-import { fetchMe } from '@/lib/auth.api';
-import { handleApiError } from '@/lib/api-error';
+import { useAuthStore } from '@/store/useAuthStore';
+import { fetchMeApi } from '@/lib/api/auth';
+import { handleApiError } from '@/lib/utils/handleApiError';
 
 const RequireAuth = ({ children }: { children: React.ReactNode }) => {
   const token = useAuthStore((state) => state.token);
@@ -22,12 +22,12 @@ const RequireAuth = ({ children }: { children: React.ReactNode }) => {
       }
 
       try {
-        const response = await fetchMe();
+        const response = await fetchMeApi();
         const user = response.data;
         login(user, token);
       } catch (err) {
         logout();
-        handleApiError(err);
+        handleApiError(err, undefined, 'auth');
       } finally {
         setHasCheckedAuth(true);
         setLoading(false);

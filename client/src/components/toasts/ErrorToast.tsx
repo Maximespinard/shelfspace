@@ -2,11 +2,11 @@ import { toast } from 'sonner';
 import { XCircle, X } from 'lucide-react';
 
 type ErrorToastProps = {
-  messages: string[];
   toastId: string | number;
+  messages: string[];
 };
 
-export function ErrorToast({ messages, toastId }: ErrorToastProps) {
+export function ErrorToast({ toastId, messages }: ErrorToastProps) {
   return (
     <div className="relative w-[360px] max-w-full rounded-xl border border-rose-300 bg-rose-100 p-4 pr-10 shadow-lg dark:border-rose-500 dark:bg-rose-900">
       {/* Close */}

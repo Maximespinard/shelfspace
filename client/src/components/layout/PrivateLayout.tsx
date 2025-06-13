@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { useAuthStore } from '@/store/authStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import UserNavbar from '@/components/layout/UserNavbar';
+import CategoryModal from '../dashboard/categories/CategoryModal';
 
 const PrivateLayout = () => {
   useEffect(() => {
@@ -30,6 +31,7 @@ const PrivateLayout = () => {
       <UserNavbar />
       <main className="flex-1 px-6 py-6 max-w-7xl w-full mx-auto">
         <Outlet />
+        <CategoryModal />
       </main>
     </div>
   );

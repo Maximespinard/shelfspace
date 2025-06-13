@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '@/store/authStore';
-import { logoutUser } from '@/lib/auth.api';
+import { useAuthStore } from '@/store/useAuthStore';
+import { logoutUserApi } from '@/lib/api/auth';
 import { Button } from '../ui/shadcn/button';
 import { toast } from 'sonner';
 
@@ -11,7 +11,7 @@ const UserNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      await logoutUser();
+      await logoutUserApi();
     } catch (err) {
       console.warn('❌ Failed to logout from backend:', err);
     } finally {

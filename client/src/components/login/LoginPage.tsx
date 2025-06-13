@@ -4,12 +4,11 @@ import { Label } from '@/components/ui/shadcn/label';
 import { Button } from '@/components/ui/shadcn/button';
 import MotionDiv from '@/components/ui/animated/MotionDiv';
 import Section from '@/components/ui/base/Section';
-import { useLoginForm } from '@/hooks/useLoginForm';
+import { useLoginForm } from '@/hooks/forms/useLoginForm';
 import { type LoginSchema } from '@/schemas/login.schema';
-import { loginUser } from '@/lib/auth.api';
-import { handleApiSuccess } from '@/lib/api-success';
-import { handleApiError } from '@/lib/api-error';
-import { useAuthStore } from '@/store/authStore';
+import { loginUserApi } from '@/lib/api/auth';
+import { handleApiError } from '@/lib/utils/handleApiError';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const LoginPage = () => {
   const { login } = useAuthStore();
@@ -17,13 +16,12 @@ const LoginPage = () => {
 
   const onSubmit = async ({ identifier, password }: LoginSchema) => {
     try {
-      const res = await loginUser({ identifier, password });
-      handleApiSuccess(res.message, 'Login successful.');
+      const res = await loginUserApi({ identifier, password });
       login(null, res.data.accessToken);
       reset();
       navigate('/dashboard', { replace: true });
     } catch (err: unknown) {
-      handleApiError(err);
+      handleApiError(err, undefined, 'auth');
     }
   };
 

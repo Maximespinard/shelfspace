@@ -45,6 +45,7 @@ export class CategoriesService {
     try {
       const category = new this.categoryModel({
         ...createCategoryDto,
+        name: createCategoryDto.name.trim().toLowerCase(),
         user: userId,
       });
       return await category.save();
@@ -61,9 +62,26 @@ export class CategoriesService {
     updateCategoryDto: UpdateCategoryDto,
     userId: string,
   ): Promise<Category> {
+    const name = updateCategoryDto.name?.trim().toLowerCase();
+
+    if (name) {
+      const existing = await this.categoryModel.findOne({
+        _id: { $ne: id },
+        name,
+        user: userId,
+      });
+
+      if (existing) {
+        throw new ConflictException('A category with this name already exists');
+      }
+    }
+
     const category = await this.categoryModel.findOneAndUpdate(
       { _id: id, user: userId },
-      updateCategoryDto,
+      {
+        ...updateCategoryDto,
+        ...(name && { name }),
+      },
       { new: true, runValidators: true },
     );
 

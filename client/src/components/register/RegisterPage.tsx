@@ -4,23 +4,23 @@ import { Label } from '@/components/ui/shadcn/label';
 import { Button } from '@/components/ui/shadcn/button';
 import MotionDiv from '@/components/ui/animated/MotionDiv';
 import Section from '@/components/ui/base/Section';
-import { useRegisterForm } from '@/hooks/useRegisterForm';
-import type { RegisterSchema } from '@/schemas/register.schema';
-import { registerUser } from '@/lib/auth.api';
-import { handleApiError } from '@/lib/api-error';
-import { handleApiSuccess } from '@/lib/api-success';
+import { useRegisterForm } from '@/hooks/forms/useRegisterForm';
+import type { RegisterPayload } from '@/schemas/register.schema';
+import { registerUserApi } from '@/lib/api/auth';
+import { handleApiError } from '@/lib/utils/handleApiError';
+import { handleApiSuccess } from '@/lib/utils/handleApiSuccess';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
 
-  const onSubmit = async ({ email, username, password }: RegisterSchema) => {
+  const onSubmit = async ({ email, username, password }: RegisterPayload) => {
     try {
-      const res = await registerUser({ email, username, password });
-      handleApiSuccess(res.message, 'Account created!');
+      await registerUserApi({ email, username, password });
+      handleApiSuccess('Account created!');
       reset();
       navigate('/login');
     } catch (err: unknown) {
-      handleApiError(err);
+      handleApiError(err, undefined, 'auth');
     }
   };
 

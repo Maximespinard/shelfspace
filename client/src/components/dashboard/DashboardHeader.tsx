@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Plus, Settings } from 'lucide-react';
 import Section from '@/components/ui/base/Section';
 import { Button } from '@/components/ui/shadcn/button';
 import { Input } from '@/components/ui/shadcn/input';
@@ -10,50 +11,79 @@ import {
   SelectItem,
 } from '@/components/ui/shadcn/select';
 import MotionDiv from '@/components/ui/animated/MotionDiv';
+import { useCategories } from '@/hooks/useCategories';
+import { useCategoryModal } from '@/hooks/useCategoryModal';
 
 const DashboardHeader = () => {
   const [sort, setSort] = useState('recent');
+  const { categories } = useCategories();
+  const { open } = useCategoryModal();
 
   return (
-    <Section className="flex flex-col gap-6">
-      {/* Title + Add button */}
-      <MotionDiv variant="fadeInUp" delay={0.1}>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-            My Collection
-          </h2>
-          <Button className="w-full sm:w-auto">+ Add New Item</Button>
-        </div>
-      </MotionDiv>
+    <Section>
+      <MotionDiv variant="fadeInDown" className="flex flex-col gap-4">
+        <h2 className="text-2xl font-bold">My Collection</h2>
 
-      {/* Filters */}
-      <MotionDiv variant="fadeInUp" delay={0.2}>
-        <div className="flex flex-col lg:flex-row lg:items-end gap-4">
-          <div className="flex-1">
-            <Input placeholder="Search items..." className="h-10" />
-          </div>
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+          {/* Left section */}
+          <Input
+            placeholder="Search items..."
+            className="h-12 sm:w-[300px] flex-1"
+          />
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          {/* Right controls */}
+          <div className="flex flex-wrap gap-3 justify-end">
             <Select>
-              <SelectTrigger className="h-10 w-full sm:w-48">
+              <SelectTrigger className="h-12 w-[180px]">
                 <SelectValue placeholder="Filter by category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {/* Dynamic categories later */}
+                {categories.length === 0 ? (
+                  <div className="px-3 py-2 text-muted-foreground text-sm">
+                    No categories yet
+                  </div>
+                ) : (
+                  <>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category._id} value={category._id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </>
+                )}
+                <div className="border-t my-1" />
+                <Button
+                  variant="ghost"
+                  onClick={() => open('add')}
+                  className="w-full justify-start px-3 py-2 text-sm text-muted-foreground hover:text-foreground"
+                >
+                  <Plus className="mr-2 size-4" />
+                  Manage Categories
+                </Button>
               </SelectContent>
             </Select>
 
-            <Select value={sort} onValueChange={setSort}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="recent">Recently Added</SelectItem>
-                <SelectItem value="name-asc">Name A–Z</SelectItem>
-                <SelectItem value="name-desc">Name Z–A</SelectItem>
-              </SelectContent>
-            </Select>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-12"
+              onClick={() => open('add')}
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Manage Categories
+            </Button>
+
+            <Button
+              variant="default"
+              size="sm"
+              className="h-12 px-5"
+              onClick={() => {
+                // TODO: open item creation modal
+              }}
+            >
+              + Add New Item
+            </Button>
           </div>
         </div>
       </MotionDiv>
