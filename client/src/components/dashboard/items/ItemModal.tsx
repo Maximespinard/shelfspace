@@ -16,13 +16,11 @@ const ItemModal = () => {
   const { addItem, updateItem } = useItemsStore();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editMode, setEditMode] = useState(false);
 
   const handleSubmit = async (data: NewItem) => {
     setIsSubmitting(true);
     if (mode === 'edit' && itemToEdit) {
       await updateItem(itemToEdit._id, data);
-      setEditMode(false);
       close();
     } else {
       await addItem(data);
@@ -33,7 +31,6 @@ const ItemModal = () => {
 
   const handleCancelEdit = () => {
     close();
-    setEditMode(false);
   };
 
   return (
@@ -52,7 +49,6 @@ const ItemModal = () => {
         </DialogHeader>
 
         <ItemForm
-          editMode={editMode}
           mode={mode}
           isSubmitting={isSubmitting}
           onSubmit={handleSubmit}

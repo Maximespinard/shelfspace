@@ -20,7 +20,6 @@ import { useItemForm } from '@/hooks/forms/useItemForm';
 import ItemImageInput from './ItemImageInput';
 
 interface Props {
-  editMode: boolean;
   mode: 'add' | 'edit';
   isSubmitting: boolean;
   cancelEdit?: () => void;
@@ -29,7 +28,6 @@ interface Props {
 }
 
 const ItemForm = ({
-  editMode,
   mode,
   isSubmitting,
   cancelEdit,
@@ -172,7 +170,7 @@ const ItemForm = ({
 
       {/* Actions */}
       <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 pt-4">
-        {editMode && cancelEdit && (
+        {mode === 'edit' && cancelEdit && (
           <Button
             type="button"
             variant="outline"
