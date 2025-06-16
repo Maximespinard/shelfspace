@@ -12,7 +12,7 @@ import type { ExistingItem, NewItem } from '@/schemas/item.schema';
 interface ItemsStore {
   items: ExistingItem[];
   fetchItems: () => Promise<void>;
-  addItem: (data: NewItem) => Promise<void>;
+  addItem: (data: NewItem, reset?: () => void) => Promise<void>;
   updateItem: (id: string, data: NewItem) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
 }
@@ -22,8 +22,10 @@ export const useItemsStore = create<ItemsStore>((set) => ({
 
   fetchItems: async () => {
     try {
-      const { data } = await fetchItemsApi();
-      set({ items: data });
+      const {
+        data: { items },
+      } = await fetchItemsApi();
+      set({ items });
     } catch (err) {
       handleApiError(err, undefined, 'item');
       console.warn('Fetch items error:', err);

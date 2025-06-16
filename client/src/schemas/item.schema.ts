@@ -1,5 +1,14 @@
 import { z } from 'zod';
 
+const categorySchema = z.object({
+  _id: z.string(),
+  name: z.string(),
+  color: z.string(),
+  user: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
 export const itemSchema = z.object({
   _id: z.string().optional(),
 
@@ -30,12 +39,7 @@ export const itemSchema = z.object({
       'Date must be in format YYYY-MM-DD'
     ),
 
-  category: z
-    .string()
-    .refine((val) => val === '' || val.length >= 10, {
-      message: 'Invalid category ID',
-    })
-    .optional(),
+  category: categorySchema.optional(), // <- objet complet pour affichage/backend
 
   imageUrl: z
     .string()
@@ -45,5 +49,13 @@ export const itemSchema = z.object({
 });
 
 export type ItemSchema = z.infer<typeof itemSchema>;
-export type NewItem = Omit<ItemSchema, '_id'>;
+export type NewItem = Omit<ItemFormSchema, '_id'> & {
+  category?: string;
+};
 export type ExistingItem = Required<ItemSchema>;
+
+export const itemFormSchema = itemSchema.extend({
+  category: z.string().optional(), // <- string for the form
+});
+
+export type ItemFormSchema = z.infer<typeof itemFormSchema>;

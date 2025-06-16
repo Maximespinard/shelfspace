@@ -14,8 +14,8 @@ export class Item {
   @Prop()
   imageUrl?: string;
 
-  @Prop({ required: true })
-  price: number;
+  @Prop()
+  price?: number;
 
   @Prop({ type: Date })
   acquisitionDate?: Date;

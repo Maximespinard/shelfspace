@@ -1,18 +1,13 @@
 import { create } from 'zustand';
-
-type Category = {
-  _id: string;
-  name: string;
-  color: string;
-};
+import type { ExistingCategory } from '@/schemas/category.schema';
 
 type Mode = 'add' | 'edit';
 
 interface CategoryModalStore {
   isOpen: boolean;
   mode: Mode;
-  categoryToEdit: Category | null;
-  open: (mode: Mode, category?: Category | null) => void;
+  categoryToEdit: ExistingCategory | null;
+  open: (mode: Mode, category?: ExistingCategory | null) => void;
   close: () => void;
 }
 

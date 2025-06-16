@@ -1,22 +1,14 @@
 import { create } from 'zustand';
+import type { ExistingItem } from '@/schemas/item.schema';
 
 type Mode = 'add' | 'edit';
-
-type Item = {
-  _id: string;
-  title: string;
-  description?: string;
-  price: number;
-  acquisitionDate?: string;
-  imageUrl?: string;
-  category?: string;
-};
 
 interface ItemModalStore {
   isOpen: boolean;
   mode: Mode;
-  itemToEdit: Item | null;
-  open: (mode: Mode, item?: Item | null) => void;
+  itemToEdit: ExistingItem | null;
+  onCloseEdit?: () => void;
+  open: (mode: Mode, ExistingItem?: ExistingItem | null) => void;
   close: () => void;
 }
 

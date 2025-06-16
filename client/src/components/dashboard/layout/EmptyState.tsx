@@ -1,5 +1,5 @@
 import { Sparkles } from 'lucide-react';
-import MotionDiv from '../ui/animated/MotionDiv';
+import MotionDiv from '../../ui/animated/MotionDiv';
 
 const EmptyState = () => {
   return (

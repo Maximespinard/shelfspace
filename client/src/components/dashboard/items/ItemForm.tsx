@@ -1,12 +1,4 @@
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  type NewItem,
-  type ItemSchema,
-  type ExistingItem,
-  itemSchema,
-} from '@/schemas/item.schema';
+import { type NewItem, type ExistingItem } from '@/schemas/item.schema';
 
 import {
   Select,
@@ -23,7 +15,7 @@ import { Loader2, Plus } from 'lucide-react';
 
 import { useCategoriesStore } from '@/store/useCategoriesStore';
 import { useCategoryModal } from '@/hooks/useCategoryModal';
-import { useItemModal } from '@/hooks/useItemModal';
+import { useItemForm } from '@/hooks/forms/useItemForm';
 
 import ItemImageInput from './ItemImageInput';
 
@@ -44,69 +36,17 @@ const ItemForm = ({
   itemToEdit,
   onSubmit,
 }: Props) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<ItemSchema>({
-    resolver: zodResolver(itemSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      price: 0,
-      acquisitionDate: '',
-      imageUrl: '',
-      category: '',
-    },
-  });
+  const { register, handleSubmit, setValue, watch, errors, isDirty } =
+    useItemForm(onSubmit, itemToEdit);
 
   const { categories } = useCategoriesStore();
+  const { open: openCategoryModal } = useCategoryModal();
+
   const selectedCategory = watch('category');
   const imageUrl = watch('imageUrl');
 
-  const { open: openCategoryModal } = useCategoryModal();
-  const { close: closeItemModal } = useItemModal();
-
-  useEffect(() => {
-    if (editMode && itemToEdit) {
-      reset({
-        title: itemToEdit.title,
-        description: itemToEdit.description || '',
-        price: itemToEdit.price,
-        acquisitionDate: itemToEdit.acquisitionDate?.split('T')[0] || '',
-        imageUrl: itemToEdit.imageUrl || '',
-        category: itemToEdit.category || '',
-      });
-    }
-  }, [editMode, itemToEdit, reset]);
-
-  const onSubmitForm = async (data: NewItem) => {
-    const fixedData = {
-      ...data,
-      category: data.category?.trim() === '' ? undefined : data.category,
-      imageUrl: data.imageUrl?.trim() === '' ? undefined : data.imageUrl,
-      acquisitionDate: data.acquisitionDate
-        ? new Date(data.acquisitionDate).toISOString()
-        : undefined,
-    };
-
-    await onSubmit(fixedData);
-    closeItemModal();
-    reset({
-      title: '',
-      description: '',
-      price: 0,
-      acquisitionDate: '',
-      imageUrl: '',
-      category: '',
-    });
-  };
-
   return (
-    <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2">
         {/* Title */}
         <div className="space-y-1.5">
@@ -115,6 +55,7 @@ const ItemForm = ({
             inputSize="lg"
             id="title"
             placeholder="e.g. MacBook Pro"
+            autoFocus={false}
             {...register('title')}
           />
           {errors.title && (
@@ -134,6 +75,7 @@ const ItemForm = ({
               }
               setValue('category', val === 'none' ? '' : val, {
                 shouldValidate: true,
+                shouldDirty: true,
               });
             }}
           >
@@ -142,7 +84,6 @@ const ItemForm = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="none">No category</SelectItem>
-
               {categories.map((cat) => (
                 <SelectItem key={cat._id} value={cat._id}>
                   <span
@@ -152,7 +93,6 @@ const ItemForm = ({
                   {cat.name}
                 </SelectItem>
               ))}
-
               <div className="py-1 px-1.5">
                 <button
                   type="button"
@@ -231,7 +171,7 @@ const ItemForm = ({
       </div>
 
       {/* Actions */}
-      <div className="flex justify-between items-center pt-2">
+      <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 pt-4">
         {editMode && cancelEdit && (
           <Button
             type="button"
@@ -244,8 +184,8 @@ const ItemForm = ({
         )}
         <Button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full"
+          disabled={isSubmitting || (mode === 'edit' && !isDirty)}
+          className={mode === 'add' ? 'w-full' : ''}
           size={'lg'}
         >
           {isSubmitting ? (

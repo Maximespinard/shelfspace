@@ -54,7 +54,10 @@ const CategoryModal = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={close}>
-      <DialogContent className="max-w-md space-y-6">
+      <DialogContent
+        className="max-w-md space-y-6"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>
             {mode === 'edit' ? 'Edit Category' : 'Manage Categories'}

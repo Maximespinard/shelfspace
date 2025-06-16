@@ -14,6 +14,7 @@ import MotionDiv from '@/components/ui/animated/MotionDiv';
 import { useCategories } from '@/hooks/useCategories';
 import { useCategoryModal } from '@/hooks/useCategoryModal';
 import { useItemModal } from '@/hooks/useItemModal';
+import { blurThen } from '@/lib/utils/dom';
 
 const DashboardHeader = () => {
   const [sort, setSort] = useState('recent');
@@ -80,7 +81,10 @@ const DashboardHeader = () => {
               variant="default"
               size="sm"
               className="h-12 px-5"
-              onClick={() => openItemModal('add')}
+              onClick={(e) => {
+                openItemModal('add');
+                blurThen(e);
+              }}
             >
               + Add New Item
             </Button>

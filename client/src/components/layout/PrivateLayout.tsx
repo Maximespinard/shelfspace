@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import UserNavbar from '@/components/layout/UserNavbar';
 import CategoryModal from '../dashboard/categories/CategoryModal';
 import ItemModal from '../dashboard/items/ItemModal';
+import Footer from './Footer';
 
 const PrivateLayout = () => {
   useEffect(() => {
@@ -35,6 +36,7 @@ const PrivateLayout = () => {
         <CategoryModal />
         <ItemModal />
       </main>
+      <Footer />
     </div>
   );
 };

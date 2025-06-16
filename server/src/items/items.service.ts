@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -79,8 +80,20 @@ export class ItemsService {
     if (data.category) {
       await this.categoriesService.findOne(data.category, userId);
     }
+
     const newItem = new this.itemModel({ ...data, user: userId });
-    return newItem.save();
+    const savedItem = await newItem.save();
+
+    const populatedItem = await this.itemModel
+      .findById(savedItem._id)
+      .populate('category')
+      .lean();
+
+    if (!populatedItem) {
+      throw new InternalServerErrorException('Failed to populate created item');
+    }
+
+    return populatedItem;
   }
 
   async update(
@@ -91,14 +104,19 @@ export class ItemsService {
     if (updates.category) {
       await this.categoriesService.findOne(updates.category, userId);
     }
-    const item = await this.itemModel.findOneAndUpdate(
-      { _id: id, user: userId },
-      updates,
-      { new: true, runValidators: true },
-    );
+
+    const item = await this.itemModel
+      .findOneAndUpdate({ _id: id, user: userId }, updates, {
+        new: true,
+        runValidators: true,
+      })
+      .populate('category')
+      .lean();
+
     if (!item) {
       throw new NotFoundException(`Item with ID ${id} not found`);
     }
+
     return item;
   }
 

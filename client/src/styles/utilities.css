@@ -20,4 +20,37 @@
   .button-outline {
     @apply border border-foreground text-foreground px-4 py-2 rounded-xl hover:bg-foreground/10 transition;
   }
+
+  /* 
+    Utility class for 3D flip animations.
+    Ensures that the back side of the card stays hidden when not visible.
+    Required for proper card flipping behavior (especially in Safari and Chrome).
+  */
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* 
+    Premium scrollbar style for scrollable zones (e.g., card back description)
+    Works on WebKit (Chrome, Safari, Edge)
+  */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 transparent; /* thumb + track */
+  }
+
+  /* WebKit (Chrome, Safari) */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #94a3b8; /* Slate-400 */
+    border-radius: 4px;
+  }
 }
