@@ -1,4 +1,4 @@
-import { type NewItem, type ExistingItem } from '@/schemas/item.schema';
+import { type ExistingItem } from '@/schemas/item.schema';
 
 import {
   Select,
@@ -17,14 +17,15 @@ import { useCategoriesStore } from '@/store/useCategoriesStore';
 import { useCategoryModal } from '@/hooks/useCategoryModal';
 import { useItemForm } from '@/hooks/forms/useItemForm';
 
-import ItemImageInput from './ItemImageInput';
+import ItemImageDropzone from './ItemImageDropzone';
+import { Controller } from 'react-hook-form';
 
 interface Props {
   mode: 'add' | 'edit';
   isSubmitting: boolean;
   cancelEdit?: () => void;
   itemToEdit?: ExistingItem;
-  onSubmit: (data: NewItem) => void;
+  onSubmit: (data: FormData) => void;
 }
 
 const ItemForm = ({
@@ -34,14 +35,13 @@ const ItemForm = ({
   itemToEdit,
   onSubmit,
 }: Props) => {
-  const { register, handleSubmit, setValue, watch, errors, isDirty } =
+  const { register, handleSubmit, setValue, watch, errors, isDirty, control } =
     useItemForm(onSubmit, itemToEdit);
 
   const { categories } = useCategoriesStore();
   const { open: openCategoryModal } = useCategoryModal();
 
   const selectedCategory = watch('category');
-  const imageUrl = watch('imageUrl');
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -156,10 +156,19 @@ const ItemForm = ({
       </div>
 
       <div className="pt-1">
-        <ItemImageInput
-          currentUrl={imageUrl}
-          onSelect={(url) => setValue('imageUrl', url)}
+        <Controller
+          name="image"
+          control={control}
+          render={({ field: { onChange } }) => (
+            <ItemImageDropzone
+              onSelect={(file) => onChange(file)}
+              defaultPreviewUrl={itemToEdit?.imageUrl}
+            />
+          )}
         />
+        {errors.image && (
+          <p className="text-sm text-destructive">{errors.image.message}</p>
+        )}
       </div>
 
       <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 pt-4">

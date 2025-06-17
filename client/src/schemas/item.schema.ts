@@ -39,23 +39,34 @@ export const itemSchema = z.object({
       'Date must be in format YYYY-MM-DD'
     ),
 
-  category: categorySchema.optional(), // <- objet complet pour affichage/backend
+  category: categorySchema.optional(),
 
-  imageUrl: z
-    .string()
-    .url('Image URL must be valid')
+  image: z
+    .instanceof(File)
+    .nullable()
     .optional()
-    .or(z.literal('')),
+    .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
+      message: 'Image must be under 5MB',
+    }),
 });
 
 export type ItemSchema = z.infer<typeof itemSchema>;
-export type NewItem = Omit<ItemFormSchema, '_id'> & {
+
+export type NewItem = {
+  title: string;
+  description?: string;
+  price?: number;
+  acquisitionDate?: string;
   category?: string;
+  image?: File | null;
 };
-export type ExistingItem = Required<ItemSchema>;
+
+export type ExistingItem = Omit<ItemSchema, 'image'> & {
+  imageUrl?: string;
+};
 
 export const itemFormSchema = itemSchema.extend({
-  category: z.string().optional(), // <- string for the form
+  category: z.string().optional(),
 });
 
 export type ItemFormSchema = z.infer<typeof itemFormSchema>;

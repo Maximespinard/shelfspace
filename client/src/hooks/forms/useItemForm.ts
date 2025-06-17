@@ -4,7 +4,6 @@ import {
   itemFormSchema,
   type ExistingItem,
   type ItemFormSchema,
-  type NewItem,
 } from '@/schemas/item.schema';
 
 /**
@@ -14,7 +13,7 @@ import {
  * - Wraps handleSubmit to convert ItemFormSchema -> NewItem.
  */
 export function useItemForm(
-  onSubmit: (data: NewItem) => void,
+  onSubmit: (data: FormData) => void,
   defaultValues?: Partial<ExistingItem>
 ) {
   const normalisedDefaults: ItemFormSchema = {
@@ -24,7 +23,7 @@ export function useItemForm(
     acquisitionDate: defaultValues?.acquisitionDate
       ? defaultValues.acquisitionDate.split('T')[0]
       : '',
-    imageUrl: defaultValues?.imageUrl ?? '',
+    image: null,
     category:
       typeof defaultValues?.category === 'object'
         ? defaultValues.category._id
@@ -37,6 +36,7 @@ export function useItemForm(
     reset,
     watch,
     setValue,
+    control,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<ItemFormSchema>({
     resolver: zodResolver(itemFormSchema),
@@ -44,16 +44,23 @@ export function useItemForm(
   });
 
   const handleAndConvert = handleSubmit((data) => {
-    const payload: Partial<NewItem> = { title: data.title.trim() };
+    const formData = new FormData();
 
-    if (data.description?.trim()) payload.description = data.description.trim();
-    if (data.price && data.price > 0) payload.price = data.price;
-    if (data.acquisitionDate)
-      payload.acquisitionDate = new Date(data.acquisitionDate).toISOString();
-    if (data.imageUrl?.trim()) payload.imageUrl = data.imageUrl.trim();
-    if (data.category?.trim()) payload.category = data.category.trim();
+    formData.append('title', data.title.trim());
 
-    onSubmit(payload as NewItem);
+    if (data.description?.trim())
+      formData.append('description', data.description.trim());
+    if (data.price && data.price > 0)
+      formData.append('price', data.price.toString());
+    if (data.acquisitionDate) {
+      const isoDate = new Date(data.acquisitionDate).toISOString();
+      formData.append('acquisitionDate', isoDate);
+    }
+    if (data.image) formData.append('image', data.image);
+    if (data.category?.trim())
+      formData.append('category', data.category.trim());
+
+    onSubmit(formData);
   });
 
   return {
@@ -65,5 +72,6 @@ export function useItemForm(
     errors,
     isSubmitting,
     isDirty,
+    control,
   };
 }

@@ -10,8 +10,17 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiQuery,
+  ApiResponse,
+  ApiConsumes,
+} from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { Item } from './item.schema';
@@ -99,12 +108,15 @@ export class ItemsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
   @ApiResponse({ status: 201, description: 'Create a new item' })
   async create(
     @Body() createItemDto: CreateItemDto,
+    @UploadedFile() file: Express.Multer.File,
     @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Item>> {
-    const item = await this.itemsService.create(createItemDto, userId);
+    const item = await this.itemsService.create(createItemDto, userId, file);
     return {
       message: 'Item created successfully',
       data: item,

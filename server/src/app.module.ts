@@ -9,10 +9,11 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { CategoriesModule } from './categories/categories.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     MongooseModule.forRoot(process.env.MONGO_URI),
     ThrottlerModule.forRoot({
       throttlers: [
@@ -26,6 +27,7 @@ import { CategoriesModule } from './categories/categories.module';
     AuthModule,
     UserModule,
     CategoriesModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

@@ -12,6 +12,7 @@ import { Item, ItemDocument } from './item.schema';
 import { buildItemFilterQuery } from 'src/utils/buildItemFilterQuery';
 import { IPaginatedItems } from '../interfaces/paginated-item.interface';
 import { CategoriesService } from 'src/categories/categories.service';
+import { UploadService } from 'src/upload/upload.service';
 
 const ALLOWED_SORT_FIELDS = ['price', 'acquisitionDate', 'title'] as const;
 type SortableItemField = (typeof ALLOWED_SORT_FIELDS)[number] | 'createdAt';
@@ -21,6 +22,7 @@ export class ItemsService {
   constructor(
     @InjectModel(Item.name) private readonly itemModel: Model<ItemDocument>,
     private readonly categoriesService: CategoriesService,
+    private readonly uploadService: UploadService,
   ) {}
 
   async findAll(
@@ -76,12 +78,28 @@ export class ItemsService {
     return item;
   }
 
-  async create(data: CreateItemDto, userId: string): Promise<Item> {
+  async create(
+    data: CreateItemDto,
+    userId: string,
+    file?: Express.Multer.File,
+  ): Promise<Item> {
     if (data.category) {
       await this.categoriesService.findOne(data.category, userId);
     }
 
-    const newItem = new this.itemModel({ ...data, user: userId });
+    let imageUrl: string | undefined;
+
+    console.log(file);
+
+    if (file) {
+      imageUrl = await this.uploadService.uploadFile(
+        file.buffer,
+        file.originalname,
+        file.mimetype,
+      );
+    }
+
+    const newItem = new this.itemModel({ ...data, user: userId, imageUrl });
     const savedItem = await newItem.save();
 
     const populatedItem = await this.itemModel
