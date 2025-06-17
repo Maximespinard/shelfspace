@@ -1,8 +1,8 @@
 import { axiosInstance } from '../axios';
 import type { NewItem } from '@/schemas/item.schema';
 
-export const fetchItemsApi = async () => {
-  const res = await axiosInstance.get('/items');
+export const fetchItemsApi = async (queryParams) => {
+  const res = await axiosInstance.get('/items', { params: queryParams });
   return res.data;
 };
 

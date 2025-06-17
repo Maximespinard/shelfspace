@@ -46,7 +46,6 @@ const ItemForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Title */}
         <div className="space-y-1.5">
           <Label htmlFor="title">Item Title</Label>
           <Input
@@ -61,7 +60,6 @@ const ItemForm = ({
           )}
         </div>
 
-        {/* Category */}
         <div className="space-y-1.5">
           <Label htmlFor="category">Category</Label>
           <Select
@@ -110,7 +108,6 @@ const ItemForm = ({
           )}
         </div>
 
-        {/* Price */}
         <div className="space-y-1.5">
           <Label htmlFor="price">Price</Label>
           <Input
@@ -126,7 +123,6 @@ const ItemForm = ({
           )}
         </div>
 
-        {/* Acquisition Date */}
         <div className="space-y-1.5">
           <Label htmlFor="acquisitionDate">Acquisition Date</Label>
           <Input
@@ -144,7 +140,6 @@ const ItemForm = ({
         </div>
       </div>
 
-      {/* Description */}
       <div className="space-y-1.5">
         <Label htmlFor="description">Description (optional)</Label>
         <Textarea
@@ -160,7 +155,6 @@ const ItemForm = ({
         )}
       </div>
 
-      {/* Image upload */}
       <div className="pt-1">
         <ItemImageInput
           currentUrl={imageUrl}
@@ -168,7 +162,6 @@ const ItemForm = ({
         />
       </div>
 
-      {/* Actions */}
       <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 pt-4">
         {mode === 'edit' && cancelEdit && (
           <Button

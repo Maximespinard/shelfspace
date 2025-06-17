@@ -1,86 +1,46 @@
 import { useState } from 'react';
-import { Plus, Settings } from 'lucide-react';
+import { Settings, SlidersHorizontal } from 'lucide-react';
 import Section from '@/components/ui/base/Section';
 import { Button } from '@/components/ui/shadcn/button';
 import { Input } from '@/components/ui/shadcn/input';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/components/ui/shadcn/select';
 import MotionDiv from '@/components/ui/animated/MotionDiv';
-import { useCategories } from '@/hooks/useCategories';
 import { useCategoryModal } from '@/hooks/useCategoryModal';
 import { useItemModal } from '@/hooks/useItemModal';
+import { useItemFilters } from '@/store/useItemFiltersStore';
 import { blurThen } from '@/lib/utils/dom';
+import ItemFiltersDrawer from '../items/ItemFiltersDrawer';
+import { useMediaQuery } from 'usehooks-ts';
 
 const DashboardHeader = () => {
-  const [sort, setSort] = useState('recent');
-  const { categories } = useCategories();
   const { open: openCategoryModal } = useCategoryModal();
   const { open: openItemModal } = useItemModal();
+  const { filters, setFilter } = useItemFilters();
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 640px)');
+
+  const countActiveSecondaryFilters = () => {
+    let count = 0;
+    if (filters.minPrice) count++;
+    if (filters.maxPrice) count++;
+    if (filters.startDate) count++;
+    if (filters.endDate) count++;
+    if (filters.category && filters.category !== 'all') count++;
+    if (filters.sortBy && filters.sortBy !== 'createdAt') count++;
+    return count;
+  };
 
   return (
     <Section>
-      <MotionDiv variant="fadeInDown" className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold">My Collection</h2>
+      <MotionDiv variant="fadeInDown" className="flex flex-col gap-6">
+        <h2 className="text-3xl font-bold text-center text-primary">
+          My Collection
+        </h2>
 
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-          {/* Left section */}
-          <Input
-            placeholder="Search items..."
-            className="h-12 sm:w-[300px] flex-1"
-          />
-
-          {/* Right controls */}
-          <div className="flex flex-wrap gap-3 justify-end">
-            <Select>
-              <SelectTrigger className="h-12 w-[180px]">
-                <SelectValue placeholder="Filter by category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.length === 0 ? (
-                  <div className="px-3 py-2 text-muted-foreground text-sm">
-                    No categories yet
-                  </div>
-                ) : (
-                  <>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    {categories.map((category) => (
-                      <SelectItem key={category._id} value={category._id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </>
-                )}
-                <div className="border-t my-1" />
-                <Button
-                  variant="ghost"
-                  onClick={() => openCategoryModal('add')}
-                  className="w-full justify-start px-3 py-2 text-sm text-muted-foreground hover:text-foreground"
-                >
-                  <Plus className="mr-2 size-4" />
-                  Manage Categories
-                </Button>
-              </SelectContent>
-            </Select>
-
+        {isMobile ? (
+          <div className="flex flex-col gap-3 w-full">
             <Button
-              variant="outline"
-              size="sm"
-              className="h-12"
-              onClick={() => openCategoryModal('add')}
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              Manage Categories
-            </Button>
-
-            <Button
-              variant="default"
-              size="sm"
-              className="h-12 px-5"
+              className="h-12 w-full"
               onClick={(e) => {
                 openItemModal('add');
                 blurThen(e);
@@ -88,8 +48,95 @@ const DashboardHeader = () => {
             >
               + Add New Item
             </Button>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                variant="outline"
+                className="h-12 w-full min-w-0 truncate"
+                onClick={() => openCategoryModal('add')}
+              >
+                <Settings className="w-4 h-4 mr-2 shrink-0" />
+                <span className="truncate">Manage Categories</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="h-12 w-full justify-start min-w-0 truncate"
+                onClick={() => setDrawerOpen(true)}
+              >
+                <SlidersHorizontal className="w-4 h-4 mr-2 shrink-0" />
+                <span className="truncate">Filters</span>
+                {countActiveSecondaryFilters() > 0 && (
+                  <span className="ml-2 text-xs text-muted-foreground whitespace-nowrap">
+                    ({countActiveSecondaryFilters()})
+                  </span>
+                )}
+              </Button>
+            </div>
+
+            <Input
+              placeholder="Search items..."
+              className="h-12 w-full"
+              value={filters.search}
+              onChange={(e) => setFilter('search', e.target.value)}
+            />
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-col gap-6">
+            <div className="flex justify-between items-end gap-4 flex-wrap">
+              <div className="flex gap-3 flex-wrap">
+                <Button
+                  variant="outline"
+                  className="h-12"
+                  onClick={(e) => {
+                    openCategoryModal('add');
+                    blurThen(e);
+                  }}
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Manage Categories
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="h-12 justify-start"
+                  onClick={() => setDrawerOpen(true)}
+                >
+                  <SlidersHorizontal className="w-4 h-4 mr-2" />
+                  Filters
+                  {countActiveSecondaryFilters() > 0 && (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      ({countActiveSecondaryFilters()})
+                    </span>
+                  )}
+                </Button>
+              </div>
+
+              <Button
+                className="h-12 px-5"
+                onClick={(e) => {
+                  openItemModal('add');
+                  blurThen(e);
+                }}
+              >
+                + Add New Item
+              </Button>
+            </div>
+
+            <div className="w-full max-w-xl mx-auto mt-10">
+              <Input
+                placeholder="Search items..."
+                className="h-12 w-full"
+                value={filters.search}
+                onChange={(e) => setFilter('search', e.target.value)}
+              />
+            </div>
+          </div>
+        )}
+
+        <ItemFiltersDrawer
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+        />
       </MotionDiv>
     </Section>
   );

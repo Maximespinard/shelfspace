@@ -8,10 +8,11 @@ import {
 import { handleApiError } from '@/lib/utils/handleApiError';
 import { handleApiSuccess } from '@/lib/utils/handleApiSuccess';
 import type { ExistingItem, NewItem } from '@/schemas/item.schema';
+import type { ItemFilters } from './useItemFiltersStore';
 
 interface ItemsStore {
   items: ExistingItem[];
-  fetchItems: () => Promise<void>;
+  fetchItems: (filters?: Partial<ItemFilters>) => Promise<void>;
   addItem: (data: NewItem, reset?: () => void) => Promise<void>;
   updateItem: (id: string, data: NewItem) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
@@ -20,11 +21,11 @@ interface ItemsStore {
 export const useItemsStore = create<ItemsStore>((set) => ({
   items: [],
 
-  fetchItems: async () => {
+  fetchItems: async (filters = {}) => {
     try {
       const {
         data: { items },
-      } = await fetchItemsApi();
+      } = await fetchItemsApi(filters);
       set({ items });
     } catch (err) {
       handleApiError(err, undefined, 'item');
