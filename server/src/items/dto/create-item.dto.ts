@@ -11,6 +11,7 @@ import {
   Matches,
   IsMongoId,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateItemDto {
   @IsString()
@@ -31,6 +32,7 @@ export class CreateItemDto {
   category?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber(
     { maxDecimalPlaces: 2 },
     { message: 'Price must be a valid number.' },

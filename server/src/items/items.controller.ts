@@ -125,13 +125,21 @@ export class ItemsController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
   @ApiResponse({ status: 200, description: 'Update an item' })
   async update(
     @Param('id') id: string,
     @Body() updateItemDto: UpdateItemDto,
+    @UploadedFile() file: Express.Multer.File,
     @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Item>> {
-    const item = await this.itemsService.update(id, updateItemDto, userId);
+    const item = await this.itemsService.update(
+      id,
+      updateItemDto,
+      userId,
+      file,
+    );
     return {
       message: 'Item updated successfully',
       data: item,

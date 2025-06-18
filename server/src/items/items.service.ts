@@ -89,8 +89,6 @@ export class ItemsService {
 
     let imageUrl: string | undefined;
 
-    console.log(file);
-
     if (file) {
       imageUrl = await this.uploadService.uploadFile(
         file.buffer,
@@ -118,27 +116,67 @@ export class ItemsService {
     id: string,
     updates: UpdateItemDto,
     userId: string,
+    file?: Express.Multer.File,
   ): Promise<Item> {
     if (updates.category) {
       await this.categoriesService.findOne(updates.category, userId);
     }
 
-    const item = await this.itemModel
-      .findOneAndUpdate({ _id: id, user: userId }, updates, {
-        new: true,
-        runValidators: true,
-      })
+    const existingItem = await this.itemModel.findOne({
+      _id: id,
+      user: userId,
+    });
+    if (!existingItem) {
+      throw new NotFoundException(`Item with ID ${id} not found`);
+    }
+
+    let imageUrl = existingItem.imageUrl;
+
+    if (file) {
+      if (imageUrl) {
+        const filename = imageUrl.split('/').pop();
+        if (filename) {
+          await this.uploadService.deleteFile(filename);
+        }
+      }
+
+      imageUrl = await this.uploadService.uploadFile(
+        file.buffer,
+        file.originalname,
+        file.mimetype,
+      );
+    }
+
+    const updatedItem = await this.itemModel
+      .findOneAndUpdate(
+        { _id: id, user: userId },
+        { ...updates, imageUrl },
+        { new: true, runValidators: true },
+      )
       .populate('category')
       .lean();
+
+    if (!updatedItem) {
+      throw new InternalServerErrorException('Failed to update item');
+    }
+
+    return updatedItem;
+  }
+
+  async remove(id: string, userId: string): Promise<void> {
+    const item = await this.itemModel.findOne({ _id: id, user: userId });
 
     if (!item) {
       throw new NotFoundException(`Item with ID ${id} not found`);
     }
 
-    return item;
-  }
+    if (item.imageUrl) {
+      const fileName = item.imageUrl.split('/').pop();
+      if (fileName) {
+        await this.uploadService.deleteFile(fileName);
+      }
+    }
 
-  async remove(id: string, userId: string): Promise<void> {
     const result = await this.itemModel.deleteOne({ _id: id, user: userId });
 
     if (result.deletedCount === 0) {
