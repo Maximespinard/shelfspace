@@ -5,20 +5,30 @@ import {
   itemFiltersSchema,
 } from '@/schemas/itemFilters.schema';
 import { useItemFilters } from '@/store/useItemFiltersStore';
+import { isEqual } from 'lodash';
 
 export function useItemFiltersForm(
   onSubmit: (data: ItemFiltersSchema) => void
 ) {
-  const { filters: defaultFilters } = useItemFilters();
+  const { filters: activeFilters, defaultEmptyFilters } = useItemFilters();
 
   const form = useForm<ItemFiltersSchema>({
     resolver: zodResolver(itemFiltersSchema),
-    defaultValues: defaultFilters,
+    defaultValues: activeFilters,
     mode: 'onTouched',
   });
+
+  const currentValues = form.watch();
+
+  const hasChangedFilters = !isEqual(currentValues, activeFilters);
+  const hasActiveFilters = !isEqual(defaultEmptyFilters, activeFilters);
 
   return {
     ...form,
     handleSubmit: form.handleSubmit(onSubmit),
+    currentValues,
+    activeFilters,
+    hasChangedFilters,
+    hasActiveFilters,
   };
 }

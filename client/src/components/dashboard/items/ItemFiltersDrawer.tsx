@@ -48,6 +48,8 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
     handleSubmit,
     reset,
     control,
+    hasChangedFilters,
+    hasActiveFilters,
     formState: { errors, isSubmitting, isDirty },
   } = useItemFiltersForm(onSubmit);
 
@@ -241,11 +243,11 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
               type="button"
               variant="outline"
               onClick={handleReset}
-              disabled={!isDirty}
+              disabled={!hasActiveFilters || !isDirty}
             >
               Reset Filters
             </Button>
-            <Button type="submit" disabled={isSubmitting || !isDirty}>
+            <Button type="submit" disabled={isSubmitting || !hasChangedFilters}>
               Apply
             </Button>
           </div>

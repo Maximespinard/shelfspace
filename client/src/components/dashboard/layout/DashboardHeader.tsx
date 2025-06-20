@@ -19,6 +19,7 @@ const DashboardHeader = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 640px)');
 
+  //FIXME: use usememo instead
   const countActiveSecondaryFilters = () => {
     let count = 0;
     if (filters.minPrice) count++;

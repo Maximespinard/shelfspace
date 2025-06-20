@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { defaultEmptyFilters } from '@/constants/filters';
 
 export interface ItemFilters {
   search?: string;
@@ -14,6 +15,7 @@ export interface ItemFilters {
 
 interface ItemFiltersStore {
   filters: ItemFilters;
+  defaultEmptyFilters: ItemFilters;
   setFilter: <K extends keyof ItemFilters>(
     key: K,
     value: ItemFilters[K]
@@ -24,16 +26,8 @@ interface ItemFiltersStore {
 export const useItemFilters = create<ItemFiltersStore>()(
   devtools(
     (set) => ({
-      filters: {
-        search: '',
-        category: 'all',
-        sortBy: 'createdAt',
-        order: 'desc',
-        minPrice: '',
-        maxPrice: '',
-        startDate: '',
-        endDate: '',
-      },
+      filters: { ...defaultEmptyFilters },
+      defaultEmptyFilters: { ...defaultEmptyFilters },
       setFilter: (key, value) =>
         set((state) => ({
           filters: {
@@ -43,16 +37,7 @@ export const useItemFilters = create<ItemFiltersStore>()(
         })),
       resetFilters: () =>
         set({
-          filters: {
-            search: '',
-            category: 'all',
-            sortBy: 'createdAt',
-            order: 'desc',
-            minPrice: '',
-            maxPrice: '',
-            startDate: '',
-            endDate: '',
-          },
+          filters: defaultEmptyFilters,
         }),
     }),
     { name: 'ItemFiltersStore' }
