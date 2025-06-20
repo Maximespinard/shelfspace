@@ -38,7 +38,7 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
     (Object.keys(values) as Array<keyof ItemFiltersSchema>).forEach((key) => {
       const value = values[key];
       if (value !== undefined) {
-        setFilter(key, value);
+        setFilter(key, String(value));
       }
     });
     onClose();

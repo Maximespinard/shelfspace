@@ -5,8 +5,8 @@ export const defaultEmptyFilters: ItemFilters = {
   category: 'all',
   sortBy: 'createdAt',
   order: 'desc',
-  minPrice: 0,
-  maxPrice: 0,
+  minPrice: '',
+  maxPrice: '',
   startDate: '',
   endDate: '',
 };

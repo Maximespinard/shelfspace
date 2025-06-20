@@ -1,4 +1,3 @@
-import type { ItemFilters } from '@/store/useItemFiltersStore';
 import { z } from 'zod';
 
 export const itemFiltersSchema = z
@@ -24,7 +23,7 @@ export const itemFiltersSchema = z
   .refine(
     (data) => {
       if (data.minPrice && data.maxPrice) {
-        return data.maxPrice >= data.minPrice;
+        return Number(data.maxPrice) >= Number(data.minPrice);
       }
       return true;
     },
@@ -46,4 +45,4 @@ export const itemFiltersSchema = z
     }
   );
 
-export type ItemFiltersSchema = ItemFilters;
+export type ItemFiltersSchema = z.infer<typeof itemFiltersSchema>;

@@ -7,8 +7,8 @@ export interface ItemFilters {
   category?: string;
   sortBy?: 'price' | 'acquisitionDate' | 'createdAt' | 'title';
   order?: 'asc' | 'desc';
-  minPrice?: number;
-  maxPrice?: number;
+  minPrice?: string;
+  maxPrice?: string;
   startDate?: string;
   endDate?: string;
 }
