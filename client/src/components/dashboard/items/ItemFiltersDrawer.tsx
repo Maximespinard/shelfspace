@@ -30,9 +30,14 @@ interface Props {
 }
 
 const ItemFiltersDrawer = ({ open, onClose }: Props) => {
-  const { setFilter, resetFilters: resetStoreFilters } = useItemFilters();
+  const {
+    setFilter,
+    filters,
+    resetFilters: resetStoreFilters,
+  } = useItemFilters();
   const { categories } = useCategories();
   const { open: openCategoryModal } = useCategoryModal();
+  const { search } = filters;
 
   const onSubmit = (values: ItemFiltersSchema) => {
     (Object.keys(values) as Array<keyof ItemFiltersSchema>).forEach((key) => {
@@ -41,6 +46,7 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
         setFilter(key, String(value));
       }
     });
+    setFilter('search', search || '');
     onClose();
   };
 
