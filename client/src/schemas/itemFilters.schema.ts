@@ -1,3 +1,4 @@
+import type { ItemFilters } from '@/store/useItemFiltersStore';
 import { z } from 'zod';
 
 export const itemFiltersSchema = z
@@ -8,15 +9,22 @@ export const itemFiltersSchema = z
       .enum(['price', 'acquisitionDate', 'createdAt', 'title'])
       .optional(),
     order: z.enum(['asc', 'desc']).optional(),
-    minPrice: z.string().optional(),
-    maxPrice: z.string().optional(),
+    minPrice: z.preprocess(
+      (val) => (val === '' ? undefined : Number(val)),
+      z.number().optional()
+    ),
+    maxPrice: z.preprocess(
+      (val) => (val === '' ? undefined : Number(val)),
+      z.number().optional()
+    ),
+
     startDate: z.string().optional(),
     endDate: z.string().optional(),
   })
   .refine(
     (data) => {
       if (data.minPrice && data.maxPrice) {
-        return Number(data.maxPrice) >= Number(data.minPrice);
+        return data.maxPrice >= data.minPrice;
       }
       return true;
     },
@@ -38,4 +46,4 @@ export const itemFiltersSchema = z
     }
   );
 
-export type ItemFiltersSchema = z.infer<typeof itemFiltersSchema>;
+export type ItemFiltersSchema = ItemFilters;

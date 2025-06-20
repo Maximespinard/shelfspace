@@ -12,7 +12,7 @@ export function useItemFiltersForm(
 ) {
   const { filters: activeFilters, defaultEmptyFilters } = useItemFilters();
 
-  const form = useForm<ItemFiltersSchema>({
+  const form = useForm({
     resolver: zodResolver(itemFiltersSchema),
     defaultValues: activeFilters,
     mode: 'onTouched',

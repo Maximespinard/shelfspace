@@ -22,6 +22,7 @@ import { useCategories } from '@/hooks/useCategories';
 import { useCategoryModal } from '@/hooks/useCategoryModal';
 import { useItemFiltersForm } from '@/hooks/forms/useItemFiltersForm';
 import { useEffect } from 'react';
+import { defaultEmptyFilters } from '@/constants/filters';
 
 interface Props {
   open: boolean;
@@ -62,16 +63,7 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
 
   const handleReset = () => {
     resetStoreFilters();
-    reset({
-      search: '',
-      category: 'all',
-      sortBy: 'createdAt',
-      order: 'desc',
-      minPrice: '',
-      maxPrice: '',
-      startDate: '',
-      endDate: '',
-    });
+    reset(defaultEmptyFilters);
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -178,7 +170,9 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
             <div className="flex flex-col gap-1 w-full">
               <label className="text-sm text-muted-foreground">Min Price</label>
               <Input
-                type="text"
+                type="number"
+                min={0}
+                max={100000}
                 inputMode="decimal"
                 {...register('minPrice')}
                 className="h-12"
@@ -192,7 +186,9 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
             <div className="flex flex-col gap-1 w-full">
               <label className="text-sm text-muted-foreground">Max Price</label>
               <Input
-                type="text"
+                type="number"
+                min={0}
+                max={100000}
                 inputMode="decimal"
                 {...register('maxPrice')}
                 className="h-12"

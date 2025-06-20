@@ -20,8 +20,8 @@ export function buildItemQueryParams(
   if (search?.trim()) query.search = search.trim();
   if (sortBy && sortBy !== 'createdAt') query.sortBy = sortBy;
   if (order && order !== 'desc') query.order = order;
-  if (minPrice?.trim()) query.minPrice = minPrice.trim();
-  if (maxPrice?.trim()) query.maxPrice = maxPrice.trim();
+  if (minPrice && minPrice > 0) query.minPrice = String(minPrice);
+  if (maxPrice && maxPrice > 0) query.maxPrice = String(maxPrice);
   if (startDate) query.startDate = startDate;
   if (endDate) query.endDate = endDate;
 
