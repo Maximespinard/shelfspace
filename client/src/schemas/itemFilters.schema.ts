@@ -10,11 +10,12 @@ export const itemFiltersSchema = z
     order: z.enum(['asc', 'desc']).optional(),
     minPrice: z.preprocess(
       (val) => (val === '' ? undefined : Number(val)),
-      z.number().optional()
+      z.number().min(0.01, 'Minimum price must be greater than 0').optional()
     ),
+
     maxPrice: z.preprocess(
       (val) => (val === '' ? undefined : Number(val)),
-      z.number().optional()
+      z.number().min(0.01, 'Maximum price must be greater than 0').optional()
     ),
 
     startDate: z.string().optional(),

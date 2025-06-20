@@ -171,7 +171,8 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
               <label className="text-sm text-muted-foreground">Min Price</label>
               <Input
                 type="number"
-                min={0}
+                min={0.01}
+                step="any"
                 max={100000}
                 inputMode="decimal"
                 {...register('minPrice')}
@@ -187,7 +188,8 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
               <label className="text-sm text-muted-foreground">Max Price</label>
               <Input
                 type="number"
-                min={0}
+                min={0.01}
+                step="any"
                 max={100000}
                 inputMode="decimal"
                 {...register('maxPrice')}
