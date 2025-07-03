@@ -18,9 +18,9 @@ import {
 import { Button } from '@/components/ui/shadcn/button';
 import { useItemFilters } from '@/store/useItemFiltersStore';
 import { type ItemFiltersSchema } from '@/schemas/itemFilters.schema';
-import { useCategories } from '@/hooks/useCategories';
-import { useCategoryModal } from '@/hooks/useCategoryModal';
-import { useItemFiltersForm } from '@/hooks/forms/useItemFiltersForm';
+import { useCategories } from '@/hooks/data/useCategories';
+import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
+import { useItemFiltersForm } from '@/hooks/form/useItemFiltersForm';
 import { useEffect } from 'react';
 import { defaultEmptyFilters } from '@/constants/filters';
 

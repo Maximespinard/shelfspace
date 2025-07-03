@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from '@/components/ui/shadcn/dialog';
 import ItemForm from './ItemForm';
-import { useItemModal } from '@/hooks/useItemModal';
+import { useItemModal } from '@/hooks/modals/useItemModal';
 import { useItemsStore } from '@/store/useItemsStore';
 import { useState } from 'react';
 import { type ExistingItem } from '@/schemas/item.schema';

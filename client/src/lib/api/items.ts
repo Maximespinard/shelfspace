@@ -1,4 +1,4 @@
-import { axiosInstance } from '../axios';
+import { axiosInstance } from './axios';
 import type { ItemFilters } from '@/store/useItemFiltersStore';
 
 export const fetchItemsApi = async (queryParams: ItemFilters) => {

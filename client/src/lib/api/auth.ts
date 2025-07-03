@@ -1,4 +1,4 @@
-import { axiosInstance } from '../axios';
+import { axiosInstance } from './axios';
 import type { LoginPayload } from '@/schemas/login.schema';
 import type { RegisterPayload } from '@/schemas/register.schema';
 

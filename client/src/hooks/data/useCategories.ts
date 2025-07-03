@@ -9,5 +9,7 @@ export const useCategories = () => {
     fetchCategories();
   }, []);
 
-  return { categories };
+  return {
+    categories,
+  };
 };

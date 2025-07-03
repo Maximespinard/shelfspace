@@ -1,4 +1,4 @@
-import { axiosInstance } from '../axios';
+import { axiosInstance } from './axios';
 import type { NewCategory } from '@/schemas/category.schema';
 
 export const fetchCategoriesApi = async () => {

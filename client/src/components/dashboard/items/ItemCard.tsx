@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Pencil, Trash2, Loader2, Info, RotateCw } from 'lucide-react';
 import { format } from 'date-fns';
-import { useItemModal } from '@/hooks/useItemModal';
+import { useItemModal } from '@/hooks/modals/useItemModal';
 import { useItemsStore } from '@/store/useItemsStore';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import type { ExistingItem } from '@/schemas/item.schema';

@@ -1,5 +1,4 @@
 import { toast } from 'sonner';
-import type { ApiError } from '@/types/api';
 import { getErrorMessage } from './errorMapper';
 import { getErrorToastContent } from '../../components/toasts/getErrorToastContent';
 
@@ -9,6 +8,17 @@ import { getErrorToastContent } from '../../components/toasts/getErrorToastConte
  * @param fallback - Fallback message if no error message is provided
  * @param context - Optional context to map specific error messages
  */
+
+type ApiError = {
+  response?: {
+    status?: number;
+    data?: {
+      message?: string;
+    };
+  };
+  message?: string;
+};
+
 export function handleApiError(
   err: unknown,
   fallback = 'An unexpected error occurred',
