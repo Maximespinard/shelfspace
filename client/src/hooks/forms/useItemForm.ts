@@ -6,12 +6,6 @@ import {
   type ItemFormSchema,
 } from '@/schemas/item.schema';
 
-/**
- * RHF + Zod hook for the Item form.
- * - Accepts ExistingItem defaults (object category) OR nothing.
- * - Always exposes form values with `category` as a string ID.
- * - Wraps handleSubmit to convert ItemFormSchema -> NewItem.
- */
 export function useItemForm(
   onSubmit: (data: FormData) => void,
   defaultValues?: Partial<ExistingItem>

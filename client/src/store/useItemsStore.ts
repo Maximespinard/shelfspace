@@ -7,14 +7,14 @@ import {
 } from '@/lib/api/items';
 import { handleApiError } from '@/lib/utils/handleApiError';
 import { handleApiSuccess } from '@/lib/utils/handleApiSuccess';
-import type { ExistingItem, NewItem } from '@/schemas/item.schema';
+import type { ExistingItem } from '@/schemas/item.schema';
 import type { ItemFilters } from './useItemFiltersStore';
 
 interface ItemsStore {
   items: ExistingItem[];
   fetchItems: (filters?: Partial<ItemFilters>) => Promise<void>;
-  addItem: (data: NewItem, reset?: () => void) => Promise<void>;
-  updateItem: (id: string, data: NewItem) => Promise<void>;
+  addItem: (data: FormData, reset?: () => void) => Promise<void>;
+  updateItem: (id: string, data: FormData) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
 }
 

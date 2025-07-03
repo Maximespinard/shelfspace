@@ -9,7 +9,7 @@ import ItemForm from './ItemForm';
 import { useItemModal } from '@/hooks/useItemModal';
 import { useItemsStore } from '@/store/useItemsStore';
 import { useState } from 'react';
-import { type ExistingItem, type NewItem } from '@/schemas/item.schema';
+import { type ExistingItem } from '@/schemas/item.schema';
 
 const ItemModal = () => {
   const { isOpen, mode, itemToEdit, close } = useItemModal();
@@ -17,10 +17,10 @@ const ItemModal = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (data: NewItem) => {
+  const handleSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     if (mode === 'edit' && itemToEdit) {
-      await updateItem(itemToEdit._id, data);
+      await updateItem(itemToEdit._id!, data);
       close();
     } else {
       await addItem(data);

@@ -43,7 +43,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
     setIsDeleting(true);
 
     try {
-      await deleteItem(item._id);
+      await deleteItem(item._id!);
     } finally {
       setIsDeleting(false);
     }

@@ -25,7 +25,7 @@ interface Props {
   isSubmitting: boolean;
   cancelEdit?: () => void;
   itemToEdit?: ExistingItem;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormData) => void | Promise<void>;
 }
 
 const ItemForm = ({

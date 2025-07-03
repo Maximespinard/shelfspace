@@ -50,16 +50,7 @@ export const itemSchema = z.object({
     }),
 });
 
-export type ItemSchema = z.infer<typeof itemSchema>;
-
-export type NewItem = {
-  title: string;
-  description?: string;
-  price?: number;
-  acquisitionDate?: string;
-  category?: string;
-  image?: File | null;
-};
+type ItemSchema = z.infer<typeof itemSchema>;
 
 export type ExistingItem = Omit<ItemSchema, 'image'> & {
   imageUrl?: string;
