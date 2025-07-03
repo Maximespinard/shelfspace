@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useDropzone, type FileRejection } from 'react-dropzone';
 import { X, ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/shadcn/button';
@@ -7,17 +7,17 @@ import { toast } from 'sonner';
 
 interface Props {
   onSelect: (file: File | null) => void;
-  defaultPreviewUrl?: string;
+  onRemove: () => void;
+  previewUrl: string;
   maxSizeMB?: number;
 }
 
 const ItemImageDropzone = ({
   onSelect,
-  defaultPreviewUrl = '',
+  onRemove,
+  previewUrl = '',
   maxSizeMB = 5,
 }: Props) => {
-  const [previewUrl, setPreviewUrl] = useState<string>(defaultPreviewUrl);
-
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
       if (fileRejections.length > 0) {
@@ -29,13 +29,8 @@ const ItemImageDropzone = ({
       const file = acceptedFiles[0];
       const reader = new FileReader();
 
-      reader.onload = () => {
-        setPreviewUrl(reader.result as string);
-      };
-
       reader.readAsDataURL(file);
       onSelect(file);
-      toast.success('Image selected');
     },
     [onSelect]
   );
@@ -52,12 +47,6 @@ const ItemImageDropzone = ({
       },
       maxSize: maxSizeMB * 1024 * 1024,
     });
-
-  const handleRemove = () => {
-    setPreviewUrl('');
-    onSelect(null);
-    toast.success('Image removed');
-  };
 
   return (
     <div className="space-y-2">
@@ -82,7 +71,10 @@ const ItemImageDropzone = ({
               type="button"
               size="icon"
               variant="ghost"
-              onClick={handleRemove}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove();
+              }}
               className="absolute top-2 right-2 z-10 text-destructive bg-white/70 hover:bg-white"
               onMouseDown={(e) => e.stopPropagation()}
             >

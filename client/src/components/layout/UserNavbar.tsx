@@ -2,7 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/useAuthStore';
 import { logoutUserApi } from '@/lib/api/auth';
 import { Button } from '../ui/shadcn/button';
-import { toast } from 'sonner';
+import { handleApiError } from '@/lib/utils/handleApiError';
+import { handleApiSuccess } from '@/lib/utils/handleApiSuccess';
 
 const UserNavbar = () => {
   const user = useAuthStore((state) => state.user);
@@ -14,10 +15,11 @@ const UserNavbar = () => {
       await logoutUserApi();
     } catch (err) {
       console.warn('❌ Failed to logout from backend:', err);
+      handleApiError(err, undefined, 'auth');
     } finally {
       logout();
       navigate('/login');
-      toast.success('You’ve been logged out.'); // TODO: use the component
+      handleApiSuccess('You’ve been logged out.');
     }
   };
 
