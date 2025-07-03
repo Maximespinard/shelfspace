@@ -26,7 +26,6 @@ function App() {
         }
       >
         <Route path="/dashboard" element={<DashboardPage />} />
-        {/* Plus tard : <Route path="/items" element={<ItemList />} /> */}
       </Route>
     </Routes>
   );
