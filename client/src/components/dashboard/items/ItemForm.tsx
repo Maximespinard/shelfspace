@@ -14,8 +14,8 @@ import { Label } from '@/components/ui/shadcn/label';
 import { Loader2, Plus } from 'lucide-react';
 
 import { useCategoriesStore } from '@/store/useCategoriesStore';
-import { useCategoryModal } from '@/hooks/useCategoryModal';
-import { useItemForm } from '@/hooks/forms/useItemForm';
+import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
+import { useItemForm } from '@/hooks/form/useItemForm';
 
 import ItemImageDropzone from './ItemImageDropzone';
 import { Controller } from 'react-hook-form';
@@ -25,7 +25,7 @@ interface Props {
   isSubmitting: boolean;
   cancelEdit?: () => void;
   itemToEdit?: ExistingItem;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormData) => void | Promise<void>;
 }
 
 const ItemForm = ({

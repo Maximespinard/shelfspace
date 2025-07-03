@@ -8,8 +8,16 @@ export const itemFiltersSchema = z
       .enum(['price', 'acquisitionDate', 'createdAt', 'title'])
       .optional(),
     order: z.enum(['asc', 'desc']).optional(),
-    minPrice: z.string().optional(),
-    maxPrice: z.string().optional(),
+    minPrice: z.preprocess(
+      (val) => (val === '' ? undefined : Number(val)),
+      z.number().min(0.01, 'Minimum price must be greater than 0').optional()
+    ),
+
+    maxPrice: z.preprocess(
+      (val) => (val === '' ? undefined : Number(val)),
+      z.number().min(0.01, 'Maximum price must be greater than 0').optional()
+    ),
+
     startDate: z.string().optional(),
     endDate: z.string().optional(),
   })

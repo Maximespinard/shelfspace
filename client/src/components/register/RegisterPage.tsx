@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/shadcn/label';
 import { Button } from '@/components/ui/shadcn/button';
 import MotionDiv from '@/components/ui/animated/MotionDiv';
 import Section from '@/components/ui/base/Section';
-import { useRegisterForm } from '@/hooks/forms/useRegisterForm';
+import { useRegisterForm } from '@/hooks/form/useRegisterForm';
 import type { RegisterPayload } from '@/schemas/register.schema';
 import { registerUserApi } from '@/lib/api/auth';
 import { handleApiError } from '@/lib/utils/handleApiError';

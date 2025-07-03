@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import './styles/index.css';
 import App from './App.tsx';
-import './lib/axios.ts';
+import './lib/api/axios.ts';
 
 import { Toaster } from 'sonner';
 

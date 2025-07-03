@@ -18,10 +18,11 @@ import {
 import { Button } from '@/components/ui/shadcn/button';
 import { useItemFilters } from '@/store/useItemFiltersStore';
 import { type ItemFiltersSchema } from '@/schemas/itemFilters.schema';
-import { useCategories } from '@/hooks/useCategories';
-import { useCategoryModal } from '@/hooks/useCategoryModal';
-import { useItemFiltersForm } from '@/hooks/forms/useItemFiltersForm';
+import { useCategories } from '@/hooks/data/useCategories';
+import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
+import { useItemFiltersForm } from '@/hooks/form/useItemFiltersForm';
 import { useEffect } from 'react';
+import { defaultEmptyFilters } from '@/constants/filters';
 
 interface Props {
   open: boolean;
@@ -29,17 +30,23 @@ interface Props {
 }
 
 const ItemFiltersDrawer = ({ open, onClose }: Props) => {
-  const { setFilter, resetFilters: resetStoreFilters } = useItemFilters();
+  const {
+    setFilter,
+    filters,
+    resetFilters: resetStoreFilters,
+  } = useItemFilters();
   const { categories } = useCategories();
   const { open: openCategoryModal } = useCategoryModal();
+  const { search } = filters;
 
   const onSubmit = (values: ItemFiltersSchema) => {
     (Object.keys(values) as Array<keyof ItemFiltersSchema>).forEach((key) => {
       const value = values[key];
       if (value !== undefined) {
-        setFilter(key, value);
+        setFilter(key, String(value));
       }
     });
+    setFilter('search', search || '');
     onClose();
   };
 
@@ -48,6 +55,8 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
     handleSubmit,
     reset,
     control,
+    hasChangedFilters,
+    hasActiveFilters,
     formState: { errors, isSubmitting, isDirty },
   } = useItemFiltersForm(onSubmit);
 
@@ -60,16 +69,7 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
 
   const handleReset = () => {
     resetStoreFilters();
-    reset({
-      search: '',
-      category: 'all',
-      sortBy: 'createdAt',
-      order: 'desc',
-      minPrice: '',
-      maxPrice: '',
-      startDate: '',
-      endDate: '',
-    });
+    reset(defaultEmptyFilters);
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -176,7 +176,10 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
             <div className="flex flex-col gap-1 w-full">
               <label className="text-sm text-muted-foreground">Min Price</label>
               <Input
-                type="text"
+                type="number"
+                min={0.01}
+                step="any"
+                max={100000}
                 inputMode="decimal"
                 {...register('minPrice')}
                 className="h-12"
@@ -190,7 +193,10 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
             <div className="flex flex-col gap-1 w-full">
               <label className="text-sm text-muted-foreground">Max Price</label>
               <Input
-                type="text"
+                type="number"
+                min={0.01}
+                step="any"
+                max={100000}
                 inputMode="decimal"
                 {...register('maxPrice')}
                 className="h-12"
@@ -241,11 +247,11 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
               type="button"
               variant="outline"
               onClick={handleReset}
-              disabled={!isDirty}
+              disabled={!hasActiveFilters || !isDirty}
             >
               Reset Filters
             </Button>
-            <Button type="submit" disabled={isSubmitting || !isDirty}>
+            <Button type="submit" disabled={isSubmitting || !hasChangedFilters}>
               Apply
             </Button>
           </div>

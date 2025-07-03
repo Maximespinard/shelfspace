@@ -112,11 +112,14 @@ export class ItemsController {
   @UseInterceptors(FileInterceptor('image'))
   @ApiResponse({ status: 201, description: 'Create a new item' })
   async create(
-    @Body() createItemDto: CreateItemDto,
+    @Body('data') rawData: string,
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Item>> {
+    const createItemDto = JSON.parse(rawData) as CreateItemDto;
+
     const item = await this.itemsService.create(createItemDto, userId, file);
+
     return {
       message: 'Item created successfully',
       data: item,
@@ -130,16 +133,19 @@ export class ItemsController {
   @ApiResponse({ status: 200, description: 'Update an item' })
   async update(
     @Param('id') id: string,
-    @Body() updateItemDto: UpdateItemDto,
     @UploadedFile() file: Express.Multer.File,
+    @Body('data') rawData: string,
     @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Item>> {
+    const updateItemDto = JSON.parse(rawData) as UpdateItemDto;
+
     const item = await this.itemsService.update(
       id,
       updateItemDto,
       userId,
       file,
     );
+
     return {
       message: 'Item updated successfully',
       data: item,

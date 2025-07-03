@@ -4,12 +4,13 @@ import Section from '@/components/ui/base/Section';
 import { Button } from '@/components/ui/shadcn/button';
 import { Input } from '@/components/ui/shadcn/input';
 import MotionDiv from '@/components/ui/animated/MotionDiv';
-import { useCategoryModal } from '@/hooks/useCategoryModal';
-import { useItemModal } from '@/hooks/useItemModal';
+import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
+import { useItemModal } from '@/hooks/modals/useItemModal';
 import { useItemFilters } from '@/store/useItemFiltersStore';
 import { blurThen } from '@/lib/utils/dom';
 import ItemFiltersDrawer from '../items/ItemFiltersDrawer';
 import { useMediaQuery } from 'usehooks-ts';
+import { useActiveFilterCount } from '@/hooks/useActiveFilterCount';
 
 const DashboardHeader = () => {
   const { open: openCategoryModal } = useCategoryModal();
@@ -19,16 +20,7 @@ const DashboardHeader = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 640px)');
 
-  const countActiveSecondaryFilters = () => {
-    let count = 0;
-    if (filters.minPrice) count++;
-    if (filters.maxPrice) count++;
-    if (filters.startDate) count++;
-    if (filters.endDate) count++;
-    if (filters.category && filters.category !== 'all') count++;
-    if (filters.sortBy && filters.sortBy !== 'createdAt') count++;
-    return count;
-  };
+  const activeFilterCount = useActiveFilterCount();
 
   return (
     <Section>
@@ -65,9 +57,9 @@ const DashboardHeader = () => {
               >
                 <SlidersHorizontal className="w-4 h-4 mr-2 shrink-0" />
                 <span className="truncate">Filters</span>
-                {countActiveSecondaryFilters() > 0 && (
+                {activeFilterCount > 0 && (
                   <span className="ml-2 text-xs text-muted-foreground whitespace-nowrap">
-                    ({countActiveSecondaryFilters()})
+                    ({activeFilterCount})
                   </span>
                 )}
               </Button>
@@ -103,9 +95,9 @@ const DashboardHeader = () => {
                 >
                   <SlidersHorizontal className="w-4 h-4 mr-2" />
                   Filters
-                  {countActiveSecondaryFilters() > 0 && (
+                  {activeFilterCount > 0 && (
                     <span className="ml-2 text-xs text-muted-foreground">
-                      ({countActiveSecondaryFilters()})
+                      ({activeFilterCount})
                     </span>
                   )}
                 </Button>

@@ -2,7 +2,7 @@ import DashboardHeader from '@/components/dashboard/layout/DashboardHeader';
 import Section from '@/components/ui/base/Section';
 import EmptyState from './EmptyState';
 import EmptyWithFilters from './EmptyWithFilters';
-import { useItems } from '@/hooks/useItems';
+import { useItems } from '@/hooks/data/useItems';
 import { useItemFilters } from '@/store/useItemFiltersStore';
 import ItemCard from '../items/ItemCard';
 import { filtersAreActive } from '@/lib/utils/isFiltersActive';
