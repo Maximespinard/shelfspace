@@ -25,9 +25,11 @@ export function useItemForm(
       : '',
     image: null,
     category:
-      typeof defaultValues?.category === 'object'
+      defaultValues?.category && typeof defaultValues.category === 'object'
         ? defaultValues.category._id
-        : defaultValues?.category ?? '',
+        : typeof defaultValues?.category === 'string'
+        ? defaultValues.category
+        : '',
   };
 
   const {
@@ -46,19 +48,18 @@ export function useItemForm(
   const handleAndConvert = handleSubmit((data) => {
     const formData = new FormData();
 
-    formData.append('title', data.title.trim());
+    const json = {
+      title: data.title.trim().toLowerCase(),
+      description: data.description?.trim() || null,
+      price: data.price ?? 0,
+      acquisitionDate: data.acquisitionDate
+        ? new Date(data.acquisitionDate).toISOString()
+        : null,
+      category: data.category || null,
+    };
 
-    if (data.description?.trim())
-      formData.append('description', data.description.trim());
-    if (data.price && data.price > 0)
-      formData.append('price', data.price.toString());
-    if (data.acquisitionDate) {
-      const isoDate = new Date(data.acquisitionDate).toISOString();
-      formData.append('acquisitionDate', isoDate);
-    }
+    formData.append('data', JSON.stringify(json));
     if (data.image) formData.append('image', data.image);
-    if (data.category?.trim())
-      formData.append('category', data.category.trim());
 
     onSubmit(formData);
   });
