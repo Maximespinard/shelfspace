@@ -59,7 +59,7 @@ const ItemCard = ({ item, index = 0 }: ItemCardProps) => {
         <div className="absolute w-full h-full backface-hidden rounded-xl overflow-hidden shadow-sm border bg-white flex flex-col">
           <div className="aspect-square bg-muted overflow-hidden">
             <img
-              src={item.imageUrl ?? '/placeholder.jpg'}
+              src={item.imageUrl ?? '/item-placeholder.svg'}
               alt={item.title}
               className="w-full h-full object-cover"
             />
