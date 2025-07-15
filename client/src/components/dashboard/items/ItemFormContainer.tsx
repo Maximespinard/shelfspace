@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { useItemForm } from '@/hooks/form/useItemForm';
 import { useCategoriesStore } from '@/store/useCategoriesStore';
 import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
 import { useItemsStore } from '@/store/useItemsStore';
+import { ErrorService } from '@/services/error.service';
 import ItemForm from './ItemForm';
 import type { ItemWithCategory } from '@/types/api';
 import type { FormMode } from '@/types/forms';
@@ -21,14 +23,14 @@ const ItemFormContainer = ({
   onCancel,
 }: ItemFormContainerProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Store hooks
   const { categories } = useCategoriesStore();
   const { addItem, updateItem } = useItemsStore();
   const { open: openCategoryModal } = useCategoryModal();
 
   // Handle form submission
-  const handleSubmit = async (formData: FormData) => {
+  async function handleSubmit(formData: FormData) {
     setIsSubmitting(true);
     try {
       if (mode === 'add') {
@@ -38,11 +40,11 @@ const ItemFormContainer = ({
       }
       onSuccess?.();
     } catch (error) {
-      console.error('Failed to submit form:', error);
+      ErrorService.handleFormError(error, setError, toast.error);
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }
 
   // Form hook
   const {
@@ -52,6 +54,7 @@ const ItemFormContainer = ({
     errors,
     watch,
     setValue,
+    setError,
     isDirty,
     imageRemoved,
     setImageRemoved,

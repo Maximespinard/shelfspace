@@ -2,3 +2,4 @@
 export * from './item.types';
 export * from './category.types';
 export * from './auth.types';
+export * from './error.types';

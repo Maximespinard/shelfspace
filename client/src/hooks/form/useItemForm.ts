@@ -4,12 +4,14 @@ import {
   UseFormRegister,
   UseFormWatch,
   UseFormSetValue,
+  UseFormSetError,
   Control,
   FieldErrors,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { itemFormSchema } from '@/schemas/item.schema';
 import { ItemService } from '@/services/item.service';
+import { ErrorService } from '@/services/error.service';
 import type { ItemWithCategory } from '@/types/api';
 import type { ItemFormValues } from '@/types/forms';
 
@@ -22,6 +24,7 @@ interface UseItemFormReturn {
   reset: () => void;
   watch: UseFormWatch<ItemFormValues>;
   setValue: UseFormSetValue<ItemFormValues>;
+  setError: UseFormSetError<ItemFormValues>;
   control: Control<ItemFormValues>;
 
   // Form state
@@ -62,6 +65,7 @@ export function useItemForm(
     reset,
     watch,
     setValue,
+    setError,
     control,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<ItemFormValues>({
@@ -109,6 +113,7 @@ export function useItemForm(
     reset,
     watch,
     setValue,
+    setError,
     control,
 
     // Form state
