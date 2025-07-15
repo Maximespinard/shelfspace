@@ -1,5 +1,13 @@
-import type { ItemWithCategory } from '@/types/api';
-import type { FormMode } from '@/types/forms';
+import type { FC } from 'react';
+import { Controller } from 'react-hook-form';
+import type {
+  UseFormRegister,
+  Control,
+  FieldErrors,
+  UseFormWatch,
+  UseFormSetValue,
+} from 'react-hook-form';
+import { Loader2, Plus } from 'lucide-react';
 
 import {
   Select,
@@ -12,40 +20,55 @@ import { Input } from '@/components/ui/shadcn/input';
 import { Textarea } from '@/components/ui/shadcn/textarea';
 import { Button } from '@/components/ui/shadcn/button';
 import { Label } from '@/components/ui/shadcn/label';
-import { Loader2, Plus } from 'lucide-react';
-
-import { useCategoriesStore } from '@/store/useCategoriesStore';
-import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
-import { useItemForm } from '@/hooks/form/useItemForm';
 
 import ItemImageDropzone from './ItemImageDropzone';
-import { Controller } from 'react-hook-form';
+import type { ItemFormValues, FormMode } from '@/types/forms';
+import type { Category } from '@/types/api';
 
-interface Props {
+interface ItemFormProps {
+  // Form state
   mode: FormMode;
   isSubmitting: boolean;
-  cancelEdit?: () => void;
-  itemToEdit?: ItemWithCategory;
-  onSubmit: (data: FormData) => void | Promise<void>;
+  isDirty: boolean;
+  
+  // Form methods
+  register: UseFormRegister<ItemFormValues>;
+  control: Control<ItemFormValues>;
+  errors: FieldErrors<ItemFormValues>;
+  watch: UseFormWatch<ItemFormValues>;
+  setValue: UseFormSetValue<ItemFormValues>;
+  
+  // Data
+  categories: Category[];
+  defaultImageUrl?: string;
+  
+  // Handlers
+  onSubmit: (e?: React.BaseSyntheticEvent) => void;
+  onCancel?: () => void;
+  onCategoryManage: () => void;
+  onImageChange: (file: File | null) => void;
 }
 
-const ItemForm = ({
+const ItemForm: FC<ItemFormProps> = ({
   mode,
   isSubmitting,
-  cancelEdit,
-  itemToEdit,
+  isDirty,
+  register,
+  control,
+  errors,
+  watch,
+  setValue,
+  categories,
+  defaultImageUrl,
   onSubmit,
-}: Props) => {
-  const { register, handleSubmit, setValue, watch, errors, isDirty, control } =
-    useItemForm(onSubmit, itemToEdit);
-
-  const { categories } = useCategoriesStore();
-  const { open: openCategoryModal } = useCategoryModal();
-
+  onCancel,
+  onCategoryManage,
+  onImageChange,
+}) => {
   const selectedCategory = watch('category');
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={onSubmit} className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="title">Item Title</Label>
@@ -67,7 +90,7 @@ const ItemForm = ({
             value={selectedCategory || 'none'}
             onValueChange={(val) => {
               if (val === '__manage__') {
-                openCategoryModal('add');
+                onCategoryManage();
                 return;
               }
               setValue('category', val === 'none' ? '' : val, {
@@ -94,7 +117,7 @@ const ItemForm = ({
                 <button
                   type="button"
                   className="flex w-full items-center justify-start gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-white transition-colors"
-                  onClick={() => openCategoryModal('add')}
+                  onClick={onCategoryManage}
                 >
                   <Plus className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium">Manage categories</span>
@@ -110,14 +133,17 @@ const ItemForm = ({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="price">Price</Label>
+          <Label htmlFor="price">Price (optional)</Label>
           <Input
             id="price"
             inputSize="lg"
             type="number"
             placeholder="e.g. 999.99"
+            step="0.01"
             min={0}
-            {...register('price', { valueAsNumber: true })}
+            {...register('price', {
+              setValueAs: (v) => (v === '' ? null : Number(v)),
+            })}
           />
           {errors.price && (
             <p className="text-sm text-destructive">{errors.price.message}</p>
@@ -125,7 +151,7 @@ const ItemForm = ({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="acquisitionDate">Acquisition Date</Label>
+          <Label htmlFor="acquisitionDate">Acquisition Date (optional)</Label>
           <Input
             id="acquisitionDate"
             inputSize="lg"
@@ -162,8 +188,11 @@ const ItemForm = ({
           control={control}
           render={({ field: { onChange } }) => (
             <ItemImageDropzone
-              onSelect={(file) => onChange(file)}
-              defaultPreviewUrl={itemToEdit?.imageUrl}
+              onSelect={(file) => {
+                onChange(file);
+                onImageChange(file);
+              }}
+              defaultPreviewUrl={defaultImageUrl}
             />
           )}
         />
@@ -173,11 +202,11 @@ const ItemForm = ({
       </div>
 
       <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 pt-4">
-        {mode === 'edit' && cancelEdit && (
+        {mode === 'edit' && onCancel && (
           <Button
             type="button"
             variant="outline"
-            onClick={cancelEdit}
+            onClick={onCancel}
             className="text-muted-foreground"
           >
             Cancel
@@ -187,7 +216,7 @@ const ItemForm = ({
           type="submit"
           disabled={isSubmitting || (mode === 'edit' && !isDirty)}
           className={mode === 'add' ? 'w-full' : ''}
-          size={'lg'}
+          size="lg"
         >
           {isSubmitting ? (
             <Loader2 className="w-4 h-4 animate-spin" />

@@ -5,33 +5,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/shadcn/dialog';
-import ItemForm from './ItemForm';
+import ItemFormContainer from './ItemFormContainer';
 import { useItemModal } from '@/hooks/modals/useItemModal';
-import { useItemsStore } from '@/store/useItemsStore';
-import { useState } from 'react';
-import { type ExistingItem } from '@/schemas/item.schema';
 
 const ItemModal = () => {
   const { isOpen, mode, itemToEdit, close } = useItemModal();
-  const { addItem, updateItem } = useItemsStore();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
-    if (mode === 'edit' && itemToEdit) {
-      await updateItem(itemToEdit._id!, data);
-      close();
-    } else {
-      await addItem(data);
-      close();
-    }
-    setIsSubmitting(false);
-  };
-
-  const handleCancelEdit = () => {
-    close();
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={close}>
@@ -48,12 +26,11 @@ const ItemModal = () => {
           </DialogDescription>
         </DialogHeader>
 
-        <ItemForm
+        <ItemFormContainer
           mode={mode}
-          isSubmitting={isSubmitting}
-          onSubmit={handleSubmit}
-          cancelEdit={handleCancelEdit}
-          itemToEdit={itemToEdit as ExistingItem}
+          itemToEdit={itemToEdit || undefined}
+          onSuccess={close}
+          onCancel={close}
         />
       </DialogContent>
     </Dialog>
