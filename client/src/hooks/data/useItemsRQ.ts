@@ -10,6 +10,8 @@ import type { ItemWithCategory } from '@/types/api';
 export const useItemsRQ = (): {
   items: ItemWithCategory[];
   total: number;
+  page: number;
+  limit: number;
   loading: boolean;
   error: unknown;
 } => {
@@ -21,6 +23,8 @@ export const useItemsRQ = (): {
   return {
     items: data?.items || [],
     total: data?.total || 0,
+    page: data?.page || 1,
+    limit: data?.limit || 12,
     loading: isLoading,
     error,
   };

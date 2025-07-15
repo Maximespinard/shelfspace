@@ -11,6 +11,8 @@ export interface ItemFilters {
   maxPrice?: string;
   startDate?: string;
   endDate?: string;
+  page?: number;
+  limit?: number;
 }
 
 interface ItemFiltersStore {
@@ -33,6 +35,8 @@ export const useItemFilters = create<ItemFiltersStore>()(
           filters: {
             ...state.filters,
             [key]: value,
+            // Reset page to 1 when other filters change
+            ...(key !== 'page' ? { page: 1 } : {}),
           },
         })),
       resetFilters: () =>

@@ -6,12 +6,20 @@ import { useItemsRQ } from '@/hooks/data/useItemsRQ';
 import { useItemFilters } from '@/store/useItemFiltersStore';
 import ItemCard from '../items/ItemCard';
 import LoadingState from './LoadingState';
+import Pagination from '@/components/ui/shadcn/pagination';
 import { filtersAreActive } from '@/lib/utils/isFiltersActive';
 
 const DashboardPage = () => {
-  const { items, loading } = useItemsRQ();
-  const { filters } = useItemFilters();
+  const { items, loading, total, page, limit } = useItemsRQ();
+  const { filters, setFilter } = useItemFilters();
   const hasActiveFilters = filtersAreActive(filters);
+
+  const totalPages = Math.ceil(total / limit);
+
+  const handlePageChange = (newPage: number) => {
+    setFilter('page', newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
 
   const renderEmptyState = () =>
@@ -34,7 +42,19 @@ const DashboardPage = () => {
         ) : items.length === 0 ? (
           renderEmptyState()
         ) : (
-          renderItemGrid()
+          <>
+            {renderItemGrid()}
+            {total > limit && (
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                totalItems={total}
+                itemsPerPage={limit}
+                className="mt-8"
+              />
+            )}
+          </>
         )}
       </Section>
     </section>
