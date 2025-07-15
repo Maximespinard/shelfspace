@@ -5,15 +5,15 @@ import {
   updateCategoryApi,
   deleteCategoryApi,
 } from '@/lib/api/categories';
-import type { ExistingCategory, NewCategory } from '@/schemas/category.schema';
+import type { Category, CreateCategoryData } from '@/types/api';
 import { handleApiError } from '@/lib/utils/handleApiError';
 import { handleApiSuccess } from '@/lib/utils/handleApiSuccess';
 
 interface CategoriesStore {
-  categories: ExistingCategory[];
+  categories: Category[];
   fetchCategories: () => Promise<void>;
-  addCategory: (data: NewCategory) => Promise<void>;
-  updateCategory: (id: string, data: NewCategory) => Promise<void>;
+  addCategory: (data: CreateCategoryData) => Promise<void>;
+  updateCategory: (id: string, data: CreateCategoryData) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
 }
 

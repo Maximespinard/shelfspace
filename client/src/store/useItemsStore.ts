@@ -7,11 +7,11 @@ import {
 } from '@/lib/api/items';
 import { handleApiError } from '@/lib/utils/handleApiError';
 import { handleApiSuccess } from '@/lib/utils/handleApiSuccess';
-import type { ExistingItem } from '@/schemas/item.schema';
+import type { ItemWithCategory } from '@/types/api';
 import type { ItemFilters } from './useItemFiltersStore';
 
 interface ItemsStore {
-  items: ExistingItem[];
+  items: ItemWithCategory[];
   fetchItems: (filters?: Partial<ItemFilters>) => Promise<void>;
   addItem: (data: FormData, reset?: () => void) => Promise<void>;
   updateItem: (id: string, data: FormData) => Promise<void>;

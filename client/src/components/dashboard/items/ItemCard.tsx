@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { useItemModal } from '@/hooks/modals/useItemModal';
 import { useItemsStore } from '@/store/useItemsStore';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
-import type { ExistingItem } from '@/schemas/item.schema';
+import type { ItemWithCategory } from '@/types/api';
 import { Button } from '@/components/ui/shadcn/button';
 import { Badge } from '@/components/ui/shadcn/badge';
 import {
@@ -21,7 +21,7 @@ import {
 import { blurThen } from '@/lib/utils/dom';
 
 interface ItemCardProps {
-  item: ExistingItem;
+  item: ItemWithCategory;
 }
 
 const ItemCard = ({ item }: ItemCardProps) => {

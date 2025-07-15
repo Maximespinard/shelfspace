@@ -2,13 +2,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   itemFormSchema,
-  type ExistingItem,
   type ItemFormSchema,
 } from '@/schemas/item.schema';
+import type { ItemWithCategory } from '@/types/api';
 
 export function useItemForm(
   onSubmit: (data: FormData) => void,
-  defaultValues?: Partial<ExistingItem>
+  defaultValues?: Partial<ItemWithCategory>
 ) {
   const normalisedDefaults: ItemFormSchema = {
     title: defaultValues?.title ?? '',

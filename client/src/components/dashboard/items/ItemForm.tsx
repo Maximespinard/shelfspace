@@ -1,4 +1,5 @@
-import { type ExistingItem } from '@/schemas/item.schema';
+import type { ItemWithCategory } from '@/types/api';
+import type { FormMode } from '@/types/forms';
 
 import {
   Select,
@@ -21,10 +22,10 @@ import ItemImageDropzone from './ItemImageDropzone';
 import { Controller } from 'react-hook-form';
 
 interface Props {
-  mode: 'add' | 'edit';
+  mode: FormMode;
   isSubmitting: boolean;
   cancelEdit?: () => void;
-  itemToEdit?: ExistingItem;
+  itemToEdit?: ItemWithCategory;
   onSubmit: (data: FormData) => void | Promise<void>;
 }
 

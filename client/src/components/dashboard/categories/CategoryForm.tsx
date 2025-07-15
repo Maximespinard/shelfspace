@@ -4,22 +4,22 @@ import { Loader2 } from 'lucide-react';
 import { ColorPicker } from './ColorPicker';
 import { PRESET_COLORS } from '@/constants/colors';
 import {
-  type NewCategory,
   type CategorySchema,
   categorySchema,
-  type ExistingCategory,
 } from '@/schemas/category.schema';
+import type { Category, CreateCategoryData } from '@/types/api';
+import type { FormMode } from '@/types/forms';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 
 interface Props {
   editMode: boolean;
-  mode: 'add' | 'edit';
-  onSubmit: (data: NewCategory) => void;
+  mode: FormMode;
+  onSubmit: (data: CreateCategoryData) => void;
   isSubmitting: boolean;
   cancelEdit?: () => void;
-  categoryToEdit?: ExistingCategory | null;
+  categoryToEdit?: Category | null;
 }
 
 export const CategoryForm = ({
