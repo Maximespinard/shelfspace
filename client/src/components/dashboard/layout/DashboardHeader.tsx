@@ -26,7 +26,7 @@ const DashboardHeader = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   return (
-    <Section className="py-6">
+    <Section className="py-6 sticky top-16 bg-background z-40">
       <MotionDiv variant="fadeInDown" className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-center text-primary">
           My Collection
