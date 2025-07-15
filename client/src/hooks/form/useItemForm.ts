@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   useForm,
   type UseFormRegister,
@@ -70,12 +70,41 @@ export function useItemForm(
     defaultValues,
   });
 
-  // Custom isDirty that includes image removal
+  // Reset form when item changes
+  useEffect(() => {
+    if (itemToEdit) {
+      reset({
+        ...ItemService.itemToFormValues(itemToEdit),
+        image: undefined,
+      });
+    } else {
+      reset({
+        title: '',
+        description: '',
+        price: null,
+        acquisitionDate: '',
+        category: '',
+        image: undefined,
+      });
+    }
+    setImageRemoved(false);
+  }, [itemToEdit, reset]);
+
+  // Custom isDirty that includes image changes
   const isFormDirty = useCallback(() => {
     if (itemToEdit) {
-      return (
-        isDirty || (imageRemoved && !!itemToEdit.imageUrl) || !!watch('image')
-      );
+      // Check if image was removed (had image, now removed)
+      const hadImage = !!itemToEdit.imageUrl;
+      const imageWasRemoved = hadImage && imageRemoved;
+      
+      // Check if new image was added
+      const newImageAdded = !!watch('image');
+      
+      // Form is dirty if:
+      // 1. React Hook Form detects changes in other fields
+      // 2. Image was removed from an item that had an image
+      // 3. A new image was added
+      return isDirty || imageWasRemoved || newImageAdded;
     }
     return isDirty;
   }, [isDirty, imageRemoved, itemToEdit, watch]);

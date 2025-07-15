@@ -83,7 +83,10 @@ const ItemFormContainer = ({
       onSubmit={handleFormSubmit}
       onCancel={onCancel}
       onCategoryManage={() => openCategoryModal('add')}
-      onImageChange={(file) => setImageRemoved(file === null)}
+      onImageChange={(file) => {
+        setValue('image', file || undefined);
+        setImageRemoved(file === null && !!itemToEdit?.imageUrl);
+      }}
     />
   );
 };
