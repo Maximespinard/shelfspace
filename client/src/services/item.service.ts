@@ -1,7 +1,5 @@
 import type {
   ItemWithCategory,
-  CreateItemData,
-  UpdateItemData,
 } from '@/types/api';
 import type { ItemFormValues, ItemFormSubmitData } from '@/types/forms';
 
@@ -14,16 +12,14 @@ export class ItemService {
    * Transform form values to API format for creating an item
    */
   static prepareCreateData(formValues: ItemFormValues): ItemFormSubmitData {
-    const data: CreateItemData = {
-      title: formValues.title.trim().toLowerCase(),
-      description: formValues.description?.trim() || null,
-      price: formValues.price === '' ? null : formValues.price,
-      acquisitionDate: formValues.acquisitionDate || null,
-      category: formValues.category || null,
-    };
-
     return {
-      data,
+      data: {
+        title: formValues.title.trim().toLowerCase(),
+        description: formValues.description?.trim() || null,
+        price: formValues.price === '' ? null : formValues.price,
+        acquisitionDate: formValues.acquisitionDate || null,
+        category: formValues.category || null,
+      },
       image: formValues.image || undefined,
     };
   }
@@ -36,32 +32,14 @@ export class ItemService {
     originalItem: ItemWithCategory,
     imageRemoved: boolean
   ): ItemFormSubmitData {
-    const data: UpdateItemData = {};
-
-    // Only include fields that have changed
-    if (formValues.title !== originalItem.title) {
-      data.title = formValues.title.trim().toLowerCase();
-    }
-    if (formValues.description !== (originalItem.description || '')) {
-      data.description = formValues.description?.trim() || null;
-    }
-    if (formValues.price !== originalItem.price) {
-      data.price = formValues.price === '' ? null : formValues.price;
-    }
-    if (
-      formValues.acquisitionDate !==
-      (originalItem.acquisitionDate?.split('T')[0] || '')
-    ) {
-      data.acquisitionDate = formValues.acquisitionDate || null;
-    }
-    if (
-      formValues.category !==
-      (typeof originalItem.category === 'object'
-        ? originalItem.category._id
-        : originalItem.category || '')
-    ) {
-      data.category = formValues.category || null;
-    }
+    const data: ItemFormSubmitData['data'] = {
+      // Always include all required fields
+      title: formValues.title.trim().toLowerCase(),
+      description: formValues.description?.trim() || null,
+      price: formValues.price === '' ? null : formValues.price,
+      acquisitionDate: formValues.acquisitionDate || null,
+      category: formValues.category || null,
+    };
 
     // Only set removeImage if user had an image and removed it
     if (imageRemoved && originalItem.imageUrl) {
@@ -86,9 +64,9 @@ export class ItemService {
         ? item.acquisitionDate.split('T')[0]
         : '',
       category:
-        typeof item.category === 'object'
+        typeof item.category === 'object' && item.category
           ? item.category._id
-          : item.category || '',
+          : '',
     };
   }
 
