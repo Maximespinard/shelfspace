@@ -19,6 +19,7 @@ import {
   ApiQuery,
   ApiResponse,
   ApiConsumes,
+  ApiBody,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -161,5 +162,81 @@ export class ItemsController {
   ): Promise<void> {
     await this.itemsService.remove(id, userId);
     return;
+  }
+
+  // New JSON-based endpoints
+
+  @Post('json')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiBody({ type: CreateItemDto })
+  @ApiResponse({ status: 201, description: 'Create a new item (JSON)' })
+  async createJson(
+    @Body() createItemDto: CreateItemDto,
+    @CurrentUser('id') userId: string,
+  ): Promise<ApiResponseType<Item>> {
+    const item = await this.itemsService.create(createItemDto, userId);
+    return {
+      message: 'Item created successfully',
+      data: item,
+    };
+  }
+
+  @Patch('json/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiBody({ type: UpdateItemDto })
+  @ApiResponse({ status: 200, description: 'Update an item (JSON)' })
+  async updateJson(
+    @Param('id') id: string,
+    @Body() updateItemDto: UpdateItemDto,
+    @CurrentUser('id') userId: string,
+  ): Promise<ApiResponseType<Item>> {
+    const item = await this.itemsService.update(id, updateItemDto, userId);
+    return {
+      message: 'Item updated successfully',
+      data: item,
+    };
+  }
+
+  @Post(':id/image')
+  @HttpCode(HttpStatus.OK)
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiResponse({ status: 200, description: 'Upload or update item image' })
+  @ApiBody({
+    description: 'Image file',
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async uploadImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser('id') userId: string,
+  ): Promise<ApiResponseType<Item>> {
+    const item = await this.itemsService.updateImage(id, userId, file);
+    return {
+      message: 'Image uploaded successfully',
+      data: item,
+    };
+  }
+
+  @Delete(':id/image')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 200, description: 'Delete item image' })
+  async deleteImage(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<ApiResponseType<Item>> {
+    const item = await this.itemsService.deleteImage(id, userId);
+    return {
+      message: 'Image deleted successfully',
+      data: item,
+    };
   }
 }
