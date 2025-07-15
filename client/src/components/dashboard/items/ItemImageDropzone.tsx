@@ -53,7 +53,9 @@ const ItemImageDropzone = ({
       maxSize: maxSizeMB * 1024 * 1024,
     });
 
-  const handleRemove = () => {
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
     setPreviewUrl('');
     onSelect(null);
     toast.success('Image removed');
@@ -84,7 +86,6 @@ const ItemImageDropzone = ({
               variant="ghost"
               onClick={handleRemove}
               className="absolute top-2 right-2 z-10 text-destructive bg-white/70 hover:bg-white"
-              onMouseDown={(e) => e.stopPropagation()}
             >
               <X className="w-4 h-4" />
             </Button>
