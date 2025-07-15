@@ -28,14 +28,14 @@ export const deleteItemApi = async (id: string) => {
   return res.data;
 };
 
-// New JSON-based endpoints
+// JSON-based endpoints (same URLs, different content type)
 export const createItemJsonApi = async (itemData: CreateItemData) => {
-  const { data } = await axiosInstance.post<{ data: ItemWithCategory }>('/items/json', itemData);
+  const { data } = await axiosInstance.post<{ data: ItemWithCategory }>('/items', itemData);
   return data;
 };
 
 export const updateItemJsonApi = async (id: string, itemData: UpdateItemData) => {
-  const { data } = await axiosInstance.patch<{ data: ItemWithCategory }>(`/items/json/${id}`, itemData);
+  const { data } = await axiosInstance.patch<{ data: ItemWithCategory }>(`/items/${id}`, itemData);
   return data;
 };
 
