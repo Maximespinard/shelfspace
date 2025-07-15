@@ -2,14 +2,14 @@ import DashboardHeader from '@/components/dashboard/layout/DashboardHeader';
 import Section from '@/components/ui/base/Section';
 import EmptyState from './EmptyState';
 import EmptyWithFilters from './EmptyWithFilters';
-import { useItems } from '@/hooks/data/useItems';
+import { useItemsRQ } from '@/hooks/data/useItemsRQ';
 import { useItemFilters } from '@/store/useItemFiltersStore';
 import ItemCard from '../items/ItemCard';
 import ItemCardSkeleton from '../items/ItemCardSkeleton';
 import { filtersAreActive } from '@/lib/utils/isFiltersActive';
 
 const DashboardPage = () => {
-  const { items, loading } = useItems();
+  const { items, loading } = useItemsRQ();
   const { filters } = useItemFilters();
   const hasActiveFilters = filtersAreActive(filters);
 

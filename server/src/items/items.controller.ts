@@ -12,6 +12,7 @@ import {
   HttpStatus,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,10 +20,12 @@ import {
   ApiQuery,
   ApiResponse,
   ApiConsumes,
+  ApiBody,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { FormDataBody } from './dto/form-data-body.dto';
 import { Item } from './item.schema';
 import { ItemsService } from './items.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
@@ -108,15 +111,24 @@ export class ItemsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiConsumes('multipart/form-data')
+  @ApiConsumes('multipart/form-data', 'application/json')
   @UseInterceptors(FileInterceptor('image'))
   @ApiResponse({ status: 201, description: 'Create a new item' })
   async create(
-    @Body('data') rawData: string,
-    @UploadedFile() file: Express.Multer.File,
+    @Body() body: CreateItemDto | FormDataBody,
+    @UploadedFile() file: Express.Multer.File | undefined,
     @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Item>> {
-    const createItemDto = JSON.parse(rawData) as CreateItemDto;
+    let createItemDto: CreateItemDto;
+
+    // Check if we received FormData with 'data' field or direct JSON
+    if ('data' in body && typeof body.data === 'string') {
+      // FormData case - parse the JSON from 'data' field
+      createItemDto = JSON.parse(body.data) as CreateItemDto;
+    } else {
+      // Direct JSON case
+      createItemDto = body as CreateItemDto;
+    }
 
     const item = await this.itemsService.create(createItemDto, userId, file);
 
@@ -128,16 +140,25 @@ export class ItemsController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  @ApiConsumes('multipart/form-data')
+  @ApiConsumes('multipart/form-data', 'application/json')
   @UseInterceptors(FileInterceptor('image'))
   @ApiResponse({ status: 200, description: 'Update an item' })
   async update(
     @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
-    @Body('data') rawData: string,
+    @Body() body: UpdateItemDto | FormDataBody,
+    @UploadedFile() file: Express.Multer.File | undefined,
     @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Item>> {
-    const updateItemDto = JSON.parse(rawData) as UpdateItemDto;
+    let updateItemDto: UpdateItemDto;
+
+    // Check if we received FormData with 'data' field or direct JSON
+    if ('data' in body && typeof body.data === 'string') {
+      // FormData case - parse the JSON from 'data' field
+      updateItemDto = JSON.parse(body.data) as UpdateItemDto;
+    } else {
+      // Direct JSON case
+      updateItemDto = body as UpdateItemDto;
+    }
 
     const item = await this.itemsService.update(
       id,
@@ -161,5 +182,51 @@ export class ItemsController {
   ): Promise<void> {
     await this.itemsService.remove(id, userId);
     return;
+  }
+
+  @Post(':id/image')
+  @HttpCode(HttpStatus.OK)
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiResponse({ status: 200, description: 'Upload or update item image' })
+  @ApiBody({
+    description: 'Image file',
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async uploadImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File | undefined,
+    @CurrentUser('id') userId: string,
+  ): Promise<ApiResponseType<Item>> {
+    if (!file) {
+      throw new BadRequestException('Image file is required');
+    }
+    const item = await this.itemsService.updateImage(id, userId, file);
+    return {
+      message: 'Image uploaded successfully',
+      data: item,
+    };
+  }
+
+  @Delete(':id/image')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 200, description: 'Delete item image' })
+  async deleteImage(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<ApiResponseType<Item>> {
+    const item = await this.itemsService.deleteImage(id, userId);
+    return {
+      message: 'Image deleted successfully',
+      data: item,
+    };
   }
 }

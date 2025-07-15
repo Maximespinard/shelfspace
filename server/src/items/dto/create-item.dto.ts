@@ -8,7 +8,6 @@ import {
   Max,
   MaxLength,
   Length,
-  Matches,
   IsMongoId,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -25,9 +24,6 @@ export class CreateItemDto {
 
   @IsOptional()
   @IsString()
-  @Matches(/^[a-zA-Z0-9\s-]{2,30}$/, {
-    message: 'Category must be alphanumeric (2–30 characters).',
-  })
   @IsMongoId({ message: 'Category ID must be a valid Mongo ObjectId' })
   category?: string;
 

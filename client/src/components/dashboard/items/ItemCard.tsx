@@ -2,9 +2,9 @@ import { useRef, useState } from 'react';
 import { Pencil, Trash2, Loader2, Info, RotateCw } from 'lucide-react';
 import { format } from 'date-fns';
 import { useItemModal } from '@/hooks/modals/useItemModal';
-import { useItemsStore } from '@/store/useItemsStore';
+import { useDeleteItem } from '@/hooks/queries';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
-import type { ExistingItem } from '@/schemas/item.schema';
+import type { ItemWithCategory } from '@/types/api';
 import { Button } from '@/components/ui/shadcn/button';
 import { Badge } from '@/components/ui/shadcn/badge';
 import {
@@ -21,15 +21,14 @@ import {
 import { blurThen } from '@/lib/utils/dom';
 
 interface ItemCardProps {
-  item: ExistingItem;
+  item: ItemWithCategory;
 }
 
 const ItemCard = ({ item }: ItemCardProps) => {
   const { open, isOpen: isItemModalOpen } = useItemModal();
-  const { deleteItem } = useItemsStore();
+  const deleteItemMutation = useDeleteItem();
 
   const [isFlipped, setIsFlipped] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
   useOutsideClick(
@@ -40,13 +39,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
   );
 
   const handleDelete = async () => {
-    setIsDeleting(true);
-
-    try {
-      await deleteItem(item._id!);
-    } finally {
-      setIsDeleting(false);
-    }
+    await deleteItemMutation.mutateAsync(item._id);
   };
 
   return (
@@ -156,9 +149,9 @@ const ItemCard = ({ item }: ItemCardProps) => {
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleDelete}
-                        disabled={isDeleting}
+                        disabled={deleteItemMutation.isPending}
                       >
-                        {isDeleting ? (
+                        {deleteItemMutation.isPending ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
                           'Delete'

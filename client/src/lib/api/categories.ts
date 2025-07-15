@@ -1,19 +1,19 @@
 import { axiosInstance } from './axios';
-import type { NewCategory } from '@/schemas/category.schema';
+import type { Category, CreateCategoryData } from '@/types/api';
 
 export const fetchCategoriesApi = async () => {
-  const res = await axiosInstance.get('/categories');
-  return res.data;
+  const res = await axiosInstance.get<{ data: Category[] }>('/categories');
+  return res.data.data;
 };
 
-export const createCategoryApi = async (data: NewCategory) => {
-  const res = await axiosInstance.post('/categories', data);
-  return res.data;
+export const createCategoryApi = async (data: CreateCategoryData) => {
+  const res = await axiosInstance.post<{ data: Category }>('/categories', data);
+  return res.data.data;
 };
 
-export const updateCategoryApi = async (id: string, data: NewCategory) => {
-  const res = await axiosInstance.patch(`/categories/${id}`, data);
-  return res.data;
+export const updateCategoryApi = async (id: string, data: CreateCategoryData) => {
+  const res = await axiosInstance.patch<{ data: Category }>(`/categories/${id}`, data);
+  return res.data.data;
 };
 
 export const deleteCategoryApi = async (id: string) => {

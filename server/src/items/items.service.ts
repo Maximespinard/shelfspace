@@ -183,4 +183,85 @@ export class ItemsService {
       throw new NotFoundException(`Item with ID ${id} not found`);
     }
   }
+
+  async updateImage(
+    id: string,
+    userId: string,
+    file: Express.Multer.File,
+  ): Promise<Item> {
+    const existingItem = await this.itemModel.findOne({
+      _id: id,
+      user: userId,
+    });
+
+    if (!existingItem) {
+      throw new NotFoundException(`Item with ID ${id} not found`);
+    }
+
+    // Delete old image if exists
+    if (existingItem.imageUrl) {
+      const filename = existingItem.imageUrl.split('/').pop();
+      if (filename) {
+        await this.uploadService.deleteFile(filename);
+      }
+    }
+
+    // Upload new image
+    const imageUrl = await this.uploadService.uploadFile(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+    );
+
+    // Update item with new image URL
+    const updatedItem = await this.itemModel
+      .findOneAndUpdate(
+        { _id: id, user: userId },
+        { imageUrl },
+        { new: true, runValidators: true },
+      )
+      .populate('category')
+      .lean();
+
+    if (!updatedItem) {
+      throw new InternalServerErrorException('Failed to update item image');
+    }
+
+    return updatedItem;
+  }
+
+  async deleteImage(id: string, userId: string): Promise<Item> {
+    const existingItem = await this.itemModel.findOne({
+      _id: id,
+      user: userId,
+    });
+
+    if (!existingItem) {
+      throw new NotFoundException(`Item with ID ${id} not found`);
+    }
+
+    // Delete image if exists
+    if (existingItem.imageUrl) {
+      const filename = existingItem.imageUrl.split('/').pop();
+      if (filename) {
+        await this.uploadService.deleteFile(filename);
+      }
+    }
+
+    // Update item to remove image URL
+    const updatedItem = await this.itemModel
+      .findOneAndUpdate(
+        { _id: id, user: userId },
+        { imageUrl: null },
+        { new: true, runValidators: true },
+      )
+      .populate('category')
+      .lean();
+
+    if (!updatedItem) {
+      throw new InternalServerErrorException('Failed to delete item image');
+    }
+
+    return updatedItem;
+  }
 }

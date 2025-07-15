@@ -1,14 +1,13 @@
 import { create } from 'zustand';
-import type { ExistingItem } from '@/schemas/item.schema';
-
-type Mode = 'add' | 'edit';
+import type { ItemWithCategory } from '@/types/api';
+import type { FormMode } from '@/types/forms';
 
 interface ItemModalStore {
   isOpen: boolean;
-  mode: Mode;
-  itemToEdit: ExistingItem | null;
+  mode: FormMode;
+  itemToEdit: ItemWithCategory | null;
   onCloseEdit?: () => void;
-  open: (mode: Mode, ExistingItem?: ExistingItem | null) => void;
+  open: (mode: FormMode, itemWithCategory?: ItemWithCategory | null) => void;
   close: () => void;
 }
 

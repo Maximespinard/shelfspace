@@ -18,5 +18,5 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
   },
-  "include": ["src/**/*.ts", "env.d.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts", "env.d.ts"]
 }
