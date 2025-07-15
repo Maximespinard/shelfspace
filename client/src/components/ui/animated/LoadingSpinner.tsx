@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import MotionDiv from './MotionDiv';
 
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
@@ -19,7 +20,7 @@ const LoadingSpinner = ({ size = 'md', className = '' }: LoadingSpinnerProps) =>
   };
 
   return (
-    <div className={`flex items-center justify-center ${className}`}>
+    <MotionDiv variant="zoomIn" delay={0} className={`flex items-center justify-center ${className}`}>
       <div className={`relative ${sizeClasses[size]}`}>
         {/* Outer ring */}
         <motion.div
@@ -54,7 +55,7 @@ const LoadingSpinner = ({ size = 'md', className = '' }: LoadingSpinnerProps) =>
           }}
         />
       </div>
-    </div>
+    </MotionDiv>
   );
 };
 

@@ -19,8 +19,8 @@ const DashboardPage = () => {
 
   const renderItemGrid = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-      {items.map((item) => (
-        <ItemCard key={item._id} item={item} />
+      {items.map((item, index) => (
+        <ItemCard key={item._id} item={item} index={index} />
       ))}
     </div>
   );
