@@ -17,7 +17,7 @@ export class ItemService {
     const data: CreateItemData = {
       title: formValues.title.trim().toLowerCase(),
       description: formValues.description?.trim() || null,
-      price: formValues.price || null,
+      price: formValues.price === '' ? null : formValues.price,
       acquisitionDate: formValues.acquisitionDate || null,
       category: formValues.category || null,
     };
@@ -46,7 +46,7 @@ export class ItemService {
       data.description = formValues.description?.trim() || null;
     }
     if (formValues.price !== originalItem.price) {
-      data.price = formValues.price || null;
+      data.price = formValues.price === '' ? null : formValues.price;
     }
     if (
       formValues.acquisitionDate !==
@@ -77,7 +77,7 @@ export class ItemService {
   /**
    * Transform API item data to form default values
    */
-  static itemToFormValues(item: ItemWithCategory): Partial<ItemFormValues> {
+  static itemToFormValues(item: ItemWithCategory): Omit<ItemFormValues, 'image'> {
     return {
       title: item.title,
       description: item.description || '',
@@ -89,7 +89,6 @@ export class ItemService {
         typeof item.category === 'object'
           ? item.category._id
           : item.category || '',
-      image: null, // Existing image is handled separately via imageUrl
     };
   }
 
@@ -138,5 +137,21 @@ export class ItemService {
       formValues.acquisitionDate !== original.acquisitionDate ||
       formValues.category !== original.category
     );
+  }
+
+  /**
+   * Determine what image operations need to be performed
+   */
+  static needsImageOperation(
+    submitData: ItemFormSubmitData,
+    hasExistingImage: boolean
+  ): { shouldRemoveImage: boolean; hasNewImage: boolean } {
+    const shouldRemoveImage = !!submitData.data.removeImage && hasExistingImage;
+    const hasNewImage = !!submitData.image;
+    
+    return {
+      shouldRemoveImage,
+      hasNewImage,
+    };
   }
 }

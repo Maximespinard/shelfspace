@@ -1,26 +1,23 @@
 import { useState, useCallback } from 'react';
 import {
   useForm,
-  UseFormRegister,
-  UseFormWatch,
-  UseFormSetValue,
-  UseFormSetError,
-  Control,
-  FieldErrors,
+  type UseFormRegister,
+  type UseFormWatch,
+  type UseFormSetValue,
+  type UseFormSetError,
+  type Control,
+  type FieldErrors,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { itemFormSchema } from '@/schemas/item.schema';
 import { ItemService } from '@/services/item.service';
-import { ErrorService } from '@/services/error.service';
 import type { ItemWithCategory } from '@/types/api';
 import type { ItemFormValues } from '@/types/forms';
 
 interface UseItemFormReturn {
   // Form methods
   register: UseFormRegister<ItemFormValues>;
-  handleSubmit: (
-    handler: (data: FormData) => void | Promise<void>
-  ) => (e?: React.BaseSyntheticEvent) => void;
+  handleSubmit: (e?: React.BaseSyntheticEvent) => void;
   reset: () => void;
   watch: UseFormWatch<ItemFormValues>;
   setValue: UseFormSetValue<ItemFormValues>;
@@ -44,10 +41,10 @@ export function useItemForm(
   const [imageRemoved, setImageRemoved] = useState(false);
 
   // Prepare default values
-  const defaultValues: ItemFormValues = itemToEdit
+  const defaultValues = itemToEdit
     ? {
         ...ItemService.itemToFormValues(itemToEdit),
-        image: null,
+        image: undefined,
       }
     : {
         title: '',
@@ -55,7 +52,7 @@ export function useItemForm(
         price: null,
         acquisitionDate: '',
         category: '',
-        image: null,
+        image: undefined,
       };
 
   // Initialize form
@@ -83,8 +80,9 @@ export function useItemForm(
     return isDirty;
   }, [isDirty, imageRemoved, itemToEdit, watch]);
 
+
   // Submit handler wrapper
-  const handleFormSubmit = handleSubmit(async (formValues: ItemFormValues) => {
+  const handleFormSubmit = handleSubmit(async (formValues) => {
     let submitData;
 
     if (itemToEdit) {

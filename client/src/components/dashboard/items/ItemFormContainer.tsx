@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { toast } from 'sonner';
 import { useItemForm } from '@/hooks/form/useItemForm';
 import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
 import { ErrorService } from '@/services/error.service';
-import { ItemService } from '@/services/item.service';
 import { useCreateItem, useUpdateItem, useCategoriesQuery } from '@/hooks/queries';
 import ItemForm from './ItemForm';
 import type { ItemWithCategory } from '@/types/api';
@@ -47,7 +45,6 @@ const ItemFormContainer = ({
         await updateItemMutation.mutateAsync({
           id: itemToEdit._id,
           submitData,
-          originalItem: itemToEdit,
         });
       }
       onSuccess?.();
@@ -66,7 +63,6 @@ const ItemFormContainer = ({
     setValue,
     setError,
     isDirty,
-    imageRemoved,
     setImageRemoved,
   } = useItemForm(handleSubmit, itemToEdit);
 
@@ -83,7 +79,7 @@ const ItemFormContainer = ({
       watch={watch}
       setValue={setValue}
       categories={categories}
-      defaultImageUrl={itemToEdit?.imageUrl}
+      defaultImageUrl={itemToEdit?.imageUrl || undefined}
       onSubmit={handleFormSubmit}
       onCancel={onCancel}
       onCategoryManage={() => openCategoryModal('add')}

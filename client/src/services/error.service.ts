@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import type { ApiError, FieldErrors } from '@/types/api/error.types';
-import type { FieldErrors as FormFieldErrors } from 'react-hook-form';
+import type { FieldErrors as FormFieldErrors, UseFormSetError, FieldPath, FieldValues } from 'react-hook-form';
 
 /**
  * Service for handling API errors and mapping them to form fields
@@ -63,7 +63,7 @@ export class ErrorService {
   /**
    * Map API field errors to React Hook Form format
    */
-  static mapToFormErrors<T extends Record<string, any>>(
+  static mapToFormErrors<T extends Record<string, unknown>>(
     fieldErrors: FieldErrors
   ): Partial<FormFieldErrors<T>> {
     const formErrors: Partial<FormFieldErrors<T>> = {};
@@ -73,7 +73,7 @@ export class ErrorService {
       formErrors[field as keyof T] = {
         type: 'server',
         message,
-      } as any;
+      } as FormFieldErrors<T>[keyof T];
     });
 
     return formErrors;
@@ -127,9 +127,9 @@ export class ErrorService {
   /**
    * Handle form submission errors
    */
-  static handleFormError<T extends Record<string, any>>(
+  static handleFormError<T extends FieldValues>(
     error: unknown,
-    setError: (name: keyof T, error: any) => void,
+    setError: UseFormSetError<T>,
     showToast?: (message: string) => void
   ): void {
     const fieldErrors = this.extractFieldErrors(error);
@@ -138,7 +138,7 @@ export class ErrorService {
       // Set field-specific errors
       Object.entries(fieldErrors).forEach(([field, message]) => {
         if (field !== 'general') {
-          setError(field as keyof T, {
+          setError(field as FieldPath<T>, {
             type: 'server',
             message: Array.isArray(message) ? message[0] : message,
           });

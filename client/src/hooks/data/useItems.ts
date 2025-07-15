@@ -13,6 +13,7 @@ export const useItems = () => {
   useEffect(() => {
     setLoading(true);
     fetchItems(buildItemQueryParams(filters)).finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterKey]);
 
   return { items, loading };

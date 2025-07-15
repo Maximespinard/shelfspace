@@ -2,7 +2,6 @@ import { axiosInstance } from './axios';
 import type { ItemFilters } from '@/store/useItemFiltersStore';
 import type { 
   ItemWithCategory, 
-  ItemsResponse,
   CreateItemData,
   UpdateItemData 
 } from '@/types/api';

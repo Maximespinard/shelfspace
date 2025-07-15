@@ -16,6 +16,7 @@ import type {
   ItemsQueryParams,
   CreateItemData,
   UpdateItemData,
+  ItemsResponse,
 } from '@/types/api';
 import type { ItemFormSubmitData } from '@/types/forms';
 
@@ -67,12 +68,10 @@ export function useUpdateItem() {
   return useMutation({
     mutationFn: async ({ 
       id, 
-      submitData, 
-      originalItem 
+      submitData
     }: { 
       id: string; 
       submitData: ItemFormSubmitData;
-      originalItem: ItemWithCategory;
     }) => {
       // Update item data
       const updatedItem = await updateItemJsonApi(id, submitData.data as UpdateItemData);
@@ -143,7 +142,7 @@ export function useOptimisticUpdateItem() {
       const previousItems = queryClient.getQueryData(queryKeys.items.lists());
 
       // Optimistically update
-      queryClient.setQueryData(queryKeys.items.lists(), (old: any) => {
+      queryClient.setQueryData(queryKeys.items.lists(), (old: ItemsResponse | undefined) => {
         if (!old) return old;
         return {
           ...old,

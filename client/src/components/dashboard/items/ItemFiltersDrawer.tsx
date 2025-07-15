@@ -65,7 +65,7 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
 
   useEffect(() => {
     setFilter('search', debouncedSearch || '');
-  }, [debouncedSearch]);
+  }, [debouncedSearch, setFilter]);
 
   const handleReset = () => {
     resetStoreFilters();

@@ -1,4 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
+import type { ItemsQueryParams } from '@/types/api';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,7 +21,7 @@ export const queryKeys = {
   items: {
     all: ['items'] as const,
     lists: () => [...queryKeys.items.all, 'list'] as const,
-    list: (filters: Record<string, any>) => [...queryKeys.items.lists(), filters] as const,
+    list: (filters: ItemsQueryParams) => [...queryKeys.items.lists(), filters] as const,
     details: () => [...queryKeys.items.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.items.details(), id] as const,
   },
