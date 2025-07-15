@@ -28,23 +28,50 @@ export function useCreateCategory() {
 
   return useMutation({
     mutationFn: createCategoryApi,
-    onSuccess: (data) => {
-      // Update cache immediately
+    onMutate: async (newCategory: CreateCategoryData) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.categories.all });
+
+      // Snapshot previous value
+      const previousCategories = queryClient.getQueryData(queryKeys.categories.lists());
+
+      // Optimistically add the new category
       queryClient.setQueryData(
         queryKeys.categories.lists(),
         (old: Category[] | undefined) => {
-          if (!old) return [data];
-          return [...old, data];
+          if (!old) return [];
+          
+          // Create optimistic category with temporary ID
+          const optimisticCategory: Category = {
+            _id: `temp-${Date.now()}`,
+            ...newCategory,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          
+          return [...old, optimisticCategory];
         }
       );
-      
-      // Invalidate to ensure consistency
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
+
+      return { previousCategories };
+    },
+    onError: (err, _, context) => {
+      // Rollback on error
+      if (context?.previousCategories) {
+        queryClient.setQueryData(
+          queryKeys.categories.lists(),
+          context.previousCategories
+        );
+      }
+      const message = ErrorService.getErrorMessage(err);
+      toast.error(message);
+    },
+    onSuccess: () => {
       toast.success('Category created successfully!');
     },
-    onError: (error) => {
-      const message = ErrorService.getErrorMessage(error);
-      toast.error(message);
+    onSettled: () => {
+      // Always refetch after mutation
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
     },
   });
 }
@@ -58,23 +85,45 @@ export function useUpdateCategory() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: CreateCategoryData }) =>
       updateCategoryApi(id, data),
-    onSuccess: (data, variables) => {
-      // Update cache immediately
+    onMutate: async ({ id, data }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.categories.all });
+
+      // Snapshot previous value
+      const previousCategories = queryClient.getQueryData(queryKeys.categories.lists());
+
+      // Optimistically update the category
       queryClient.setQueryData(
         queryKeys.categories.lists(),
         (old: Category[] | undefined) => {
-          if (!old) return [data];
-          return old.map((cat) => (cat._id === variables.id ? data : cat));
+          if (!old) return [];
+          return old.map((cat) => 
+            cat._id === id 
+              ? { ...cat, ...data, updatedAt: new Date().toISOString() }
+              : cat
+          );
         }
       );
-      
-      // Invalidate to ensure consistency
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
+
+      return { previousCategories };
+    },
+    onError: (err, _, context) => {
+      // Rollback on error
+      if (context?.previousCategories) {
+        queryClient.setQueryData(
+          queryKeys.categories.lists(),
+          context.previousCategories
+        );
+      }
+      const message = ErrorService.getErrorMessage(err);
+      toast.error(message);
+    },
+    onSuccess: () => {
       toast.success('Category updated successfully!');
     },
-    onError: (error) => {
-      const message = ErrorService.getErrorMessage(error);
-      toast.error(message);
+    onSettled: () => {
+      // Always refetch after mutation
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
     },
   });
 }

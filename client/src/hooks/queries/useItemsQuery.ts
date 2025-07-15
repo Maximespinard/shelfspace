@@ -27,6 +27,8 @@ export function useItemsQuery(params?: ItemsQueryParams) {
   return useQuery({
     queryKey: queryKeys.items.list(params || {}),
     queryFn: () => fetchItemsApi(params || {}),
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 }
 
@@ -48,13 +50,56 @@ export function useCreateItem() {
       
       return item;
     },
+    onMutate: async (submitData) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.items.all });
+
+      // Snapshot previous values for all queries
+      const previousQueries = queryClient.getQueriesData({ queryKey: queryKeys.items.lists() });
+
+      // Optimistically add the new item to all cached queries
+      queryClient.setQueriesData(
+        { queryKey: queryKeys.items.lists() },
+        (old: ItemsResponse | undefined) => {
+          if (!old) return old;
+          
+          // Create optimistic item with temporary ID
+          const optimisticItem: ItemWithCategory = {
+            _id: `temp-${Date.now()}`,
+            ...submitData.data,
+            category: null, // Will be populated by server
+            imageUrl: null,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          } as ItemWithCategory;
+
+          return {
+            ...old,
+            items: [optimisticItem, ...old.items],
+            total: old.total + 1,
+          };
+        }
+      );
+
+      return { previousQueries };
+    },
+    onError: (err, _, context) => {
+      // Rollback on error
+      if (context?.previousQueries) {
+        context.previousQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+      const message = ErrorService.getErrorMessage(err);
+      toast.error(message);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.items.all });
       toast.success('Item created successfully!');
     },
-    onError: (error) => {
-      const message = ErrorService.getErrorMessage(error);
-      toast.error(message);
+    onSettled: () => {
+      // Always refetch after mutation
+      queryClient.invalidateQueries({ queryKey: queryKeys.items.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.items.lists() });
     },
   });
 }
@@ -87,14 +132,56 @@ export function useUpdateItem() {
       
       return updatedItem;
     },
+    onMutate: async ({ id, submitData }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.items.all });
+
+      // Snapshot previous values for all queries
+      const previousQueries = queryClient.getQueriesData({ queryKey: queryKeys.items.lists() });
+
+      // Optimistically update all cached queries
+      queryClient.setQueriesData(
+        { queryKey: queryKeys.items.lists() },
+        (old: ItemsResponse | undefined) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            items: old.items.map((item: ItemWithCategory) =>
+              item._id === id
+                ? {
+                    ...item,
+                    ...submitData.data,
+                    // Keep existing category object if not updating category
+                    category: submitData.data.category ? item.category : item.category,
+                    updatedAt: new Date().toISOString(),
+                  }
+                : item
+            ),
+          };
+        }
+      );
+
+      return { previousQueries };
+    },
+    onError: (err, _, context) => {
+      // Rollback on error
+      if (context?.previousQueries) {
+        context.previousQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+      const message = ErrorService.getErrorMessage(err);
+      toast.error(message);
+    },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.items.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.items.detail(variables.id) });
       toast.success('Item updated successfully!');
     },
-    onError: (error) => {
-      const message = ErrorService.getErrorMessage(error);
-      toast.error(message);
+    onSettled: () => {
+      // Always refetch after mutation
+      queryClient.invalidateQueries({ queryKey: queryKeys.items.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.items.lists() });
     },
   });
 }
@@ -107,65 +194,47 @@ export function useDeleteItem() {
 
   return useMutation({
     mutationFn: deleteItemApi,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.items.all });
-      toast.success('Item deleted successfully!');
-    },
-    onError: (error) => {
-      const message = ErrorService.getErrorMessage(error);
-      toast.error(message);
-    },
-  });
-}
-
-/**
- * Hook for optimistic updates
- */
-export function useOptimisticUpdateItem() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ 
-      id, 
-      submitData 
-    }: { 
-      id: string; 
-      submitData: ItemFormSubmitData;
-    }) => {
-      return updateItemJsonApi(id, submitData.data as UpdateItemData);
-    },
-    onMutate: async ({ id, submitData }) => {
+    onMutate: async (itemId: string) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.items.all });
 
-      // Snapshot previous values
-      const previousItems = queryClient.getQueryData(queryKeys.items.lists());
+      // Snapshot previous values for all queries
+      const previousQueries = queryClient.getQueriesData({ queryKey: queryKeys.items.lists() });
 
-      // Optimistically update
-      queryClient.setQueryData(queryKeys.items.lists(), (old: ItemsResponse | undefined) => {
-        if (!old) return old;
-        return {
-          ...old,
-          items: old.items.map((item: ItemWithCategory) =>
-            item._id === id 
-              ? { ...item, ...submitData.data }
-              : item
-          ),
-        };
-      });
+      // Optimistically remove the item from all cached queries
+      queryClient.setQueriesData(
+        { queryKey: queryKeys.items.lists() },
+        (old: ItemsResponse | undefined) => {
+          if (!old) return old;
 
-      return { previousItems };
+          return {
+            ...old,
+            items: old.items.filter((item: ItemWithCategory) => item._id !== itemId),
+            total: old.total - 1,
+          };
+        }
+      );
+
+      return { previousQueries };
     },
-    onError: (err, variables, context) => {
+    onError: (err, _, context) => {
       // Rollback on error
-      if (context?.previousItems) {
-        queryClient.setQueryData(queryKeys.items.lists(), context.previousItems);
+      if (context?.previousQueries) {
+        context.previousQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
       }
       const message = ErrorService.getErrorMessage(err);
       toast.error(message);
     },
+    onSuccess: () => {
+      toast.success('Item deleted successfully!');
+    },
     onSettled: () => {
+      // Always refetch after mutation
       queryClient.invalidateQueries({ queryKey: queryKeys.items.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.items.lists() });
     },
   });
 }
+

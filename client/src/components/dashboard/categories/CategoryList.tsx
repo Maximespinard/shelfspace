@@ -11,12 +11,12 @@ import {
   AlertDialogDescription,
   AlertDialogTrigger,
 } from '@/components/ui/shadcn/alert-dialog';
-import { type ExistingCategory } from '@/schemas/category.schema';
+import type { Category } from '@/types/api';
 
 interface Props {
-  categories: ExistingCategory[];
+  categories: Category[];
   isDeleting: string | null;
-  onEdit: (cat: ExistingCategory) => void;
+  onEdit: (cat: Category) => void;
   onDelete: (id: string) => void;
 }
 

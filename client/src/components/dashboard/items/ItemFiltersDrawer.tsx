@@ -18,7 +18,7 @@ import {
 import { Button } from '@/components/ui/shadcn/button';
 import { useItemFilters } from '@/store/useItemFiltersStore';
 import { type ItemFiltersSchema } from '@/schemas/itemFilters.schema';
-import { useCategories } from '@/hooks/data/useCategories';
+import { useCategoriesQuery } from '@/hooks/queries';
 import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
 import { useItemFiltersForm } from '@/hooks/form/useItemFiltersForm';
 import { useEffect } from 'react';
@@ -35,7 +35,7 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
     filters,
     resetFilters: resetStoreFilters,
   } = useItemFilters();
-  const { categories } = useCategories();
+  const { data: categories = [] } = useCategoriesQuery();
   const { open: openCategoryModal } = useCategoryModal();
   const { search } = filters;
 

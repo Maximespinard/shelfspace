@@ -9,7 +9,7 @@ import type {
 // Existing endpoints (FormData-based)
 export const fetchItemsApi = async (queryParams: ItemFilters) => {
   const res = await axiosInstance.get('/items', { params: queryParams });
-  return res.data;
+  return res.data.data; // Extract nested data: { items: ItemWithCategory[], total: number }
 };
 
 export const createItemApi = async (data: FormData) => {

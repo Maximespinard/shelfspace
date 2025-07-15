@@ -9,9 +9,9 @@ import { useItemsQuery } from '@/hooks/queries';
 export const useItemsRQ = () => {
   const { filters } = useItemFilters();
   const queryParams = buildItemQueryParams(filters);
-  
+
   const { data, isLoading, error } = useItemsQuery(queryParams);
-  
+
   return {
     items: data?.items || [],
     total: data?.total || 0,

@@ -48,8 +48,8 @@ export interface ItemsQueryParams {
   limit?: number;
   search?: string;
   category?: string;
-  minPrice?: number;
-  maxPrice?: number;
+  minPrice?: string;
+  maxPrice?: string;
   startDate?: string;
   endDate?: string;
   sortBy?: 'createdAt' | 'title' | 'price' | 'acquisitionDate';

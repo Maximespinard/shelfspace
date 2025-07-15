@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import type { ApiError, FieldErrors } from '@/types/api/error.types';
-import type { FieldErrors as FormFieldErrors, UseFormSetError, FieldPath, FieldValues } from 'react-hook-form';
+import type { UseFormSetError, FieldPath, FieldValues } from 'react-hook-form';
 
 /**
  * Service for handling API errors and mapping them to form fields
@@ -24,9 +24,9 @@ export class ErrorService {
       return this.parseNestJSValidationErrors(response.message);
     }
 
-    // Handle custom field errors
-    if (response.errors && typeof response.errors === 'object') {
-      return response.errors;
+    // Handle custom field errors (if backend sends a different structure)
+    if (response.error && typeof response.error === 'object' && !Array.isArray(response.error)) {
+      return response.error as FieldErrors;
     }
 
     return null;
@@ -63,17 +63,17 @@ export class ErrorService {
   /**
    * Map API field errors to React Hook Form format
    */
-  static mapToFormErrors<T extends Record<string, unknown>>(
+  static mapToFormErrors<T extends FieldValues>(
     fieldErrors: FieldErrors
-  ): Partial<FormFieldErrors<T>> {
-    const formErrors: Partial<FormFieldErrors<T>> = {};
+  ): Partial<Record<keyof T, { type: string; message: string }>> {
+    const formErrors: Partial<Record<keyof T, { type: string; message: string }>> = {};
 
     Object.entries(fieldErrors).forEach(([field, messages]) => {
       const message = Array.isArray(messages) ? messages[0] : messages;
       formErrors[field as keyof T] = {
         type: 'server',
         message,
-      } as FormFieldErrors<T>[keyof T];
+      };
     });
 
     return formErrors;

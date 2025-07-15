@@ -9,17 +9,23 @@ import {
 import { CategoryForm } from './CategoryForm';
 import { CategoryList } from './CategoryList';
 import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
-import { useCategoriesStore } from '@/store/useCategoriesStore';
+import {
+  useCategoriesQuery,
+  useCreateCategory,
+  useUpdateCategory,
+  useDeleteCategory,
+} from '@/hooks/queries';
 import { type NewCategory } from '@/schemas/category.schema';
 
 const CategoryModal = () => {
   const { isOpen, mode, categoryToEdit, close, open } = useCategoryModal();
-  const { categories, addCategory, updateCategory, deleteCategory } =
-    useCategoriesStore();
+  const { data: categories = [] } = useCategoriesQuery();
+  const createCategoryMutation = useCreateCategory();
+  const updateCategoryMutation = useUpdateCategory();
+  const deleteCategoryMutation = useDeleteCategory();
 
   const [editMode, setEditMode] = useState(false);
-  const [isDeleting, setIsDeleting] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (mode === 'edit' && categoryToEdit) {
@@ -30,15 +36,16 @@ const CategoryModal = () => {
   }, [mode, categoryToEdit]);
 
   const handleSubmit = async (data: NewCategory) => {
-    setIsSubmitting(true);
     if (mode === 'edit' && categoryToEdit) {
-      await updateCategory(categoryToEdit._id, data);
+      await updateCategoryMutation.mutateAsync({
+        id: categoryToEdit._id,
+        data,
+      });
       open('add');
       setEditMode(false);
     } else {
-      await addCategory(data);
+      await createCategoryMutation.mutateAsync(data);
     }
-    setIsSubmitting(false);
   };
 
   const handleCancelEdit = () => {
@@ -47,9 +54,12 @@ const CategoryModal = () => {
   };
 
   const handleDelete = async (id: string) => {
-    setIsDeleting(id);
-    await deleteCategory(id);
-    setIsDeleting(null);
+    setDeletingId(id);
+    try {
+      await deleteCategoryMutation.mutateAsync(id);
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
@@ -70,7 +80,9 @@ const CategoryModal = () => {
         <CategoryForm
           editMode={editMode}
           mode={mode}
-          isSubmitting={isSubmitting}
+          isSubmitting={
+            createCategoryMutation.isPending || updateCategoryMutation.isPending
+          }
           onSubmit={handleSubmit}
           cancelEdit={handleCancelEdit}
           categoryToEdit={categoryToEdit}
@@ -81,7 +93,7 @@ const CategoryModal = () => {
             categories={categories}
             onEdit={(cat) => open('edit', cat)}
             onDelete={handleDelete}
-            isDeleting={isDeleting}
+            isDeleting={deletingId}
           />
         )}
       </DialogContent>
