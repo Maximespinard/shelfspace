@@ -1,17 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import { useMediaQuery } from 'usehooks-ts';
 import { useAuthStore } from '@/store/useAuthStore';
 import { logoutUserApi } from '@/lib/api/auth';
 import { Button } from '../ui/shadcn/button';
 import { handleApiError } from '@/lib/utils/handleApiError';
 import { handleApiSuccess } from '@/lib/utils/handleApiSuccess';
+import { useResponsiveBreakpoints } from '@/hooks/useResponsiveBreakpoints';
 
 const UserNavbar = () => {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
 
-  const isMobile = useMediaQuery('(max-width: 639px)');
+  const { isMobile } = useResponsiveBreakpoints();
 
   const handleLogout = async () => {
     try {

@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useMediaQuery } from 'usehooks-ts';
 import { Button } from '@/components/ui/shadcn/button';
+import { useResponsiveBreakpoints } from '@/hooks/useResponsiveBreakpoints';
 
 const Navbar = () => {
-  const isMobile = useMediaQuery('(max-width: 639px)');
+  const { isMobile } = useResponsiveBreakpoints();
   
   return (
     <header className="fixed top-0 left-0 z-50 w-full h-16 md:h-20 backdrop-blur-sm bg-gradient-to-b from-black/30 to-transparent border-b border-white/90">

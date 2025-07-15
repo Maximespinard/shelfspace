@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Settings, SlidersHorizontal } from 'lucide-react';
-import { useMediaQuery } from 'usehooks-ts';
 import Section from '@/components/ui/base/Section';
 import { Button } from '@/components/ui/shadcn/button';
 import { Input } from '@/components/ui/shadcn/input';
@@ -11,6 +10,7 @@ import { useItemFilters } from '@/store/useItemFiltersStore';
 import { blurThen } from '@/lib/utils/dom';
 import ItemFiltersDrawer from '../items/ItemFiltersDrawer';
 import { useActiveFilterCount } from '@/hooks/useActiveFilterCount';
+import { useResponsiveBreakpoints } from '@/hooks/useResponsiveBreakpoints';
 
 const DashboardHeader = () => {
   const { open: openCategoryModal } = useCategoryModal();
@@ -19,11 +19,7 @@ const DashboardHeader = () => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const activeFilterCount = useActiveFilterCount();
-  
-  // Media query breakpoints
-  const isMobile = useMediaQuery('(max-width: 639px)');
-  const isTablet = useMediaQuery('(min-width: 640px) and (max-width: 1023px)');
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const { isMobile, isTablet, isDesktop } = useResponsiveBreakpoints();
 
   return (
     <Section className="py-6 sticky top-16 bg-background z-40">
