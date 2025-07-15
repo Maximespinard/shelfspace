@@ -5,7 +5,7 @@ import EmptyWithFilters from './EmptyWithFilters';
 import { useItemsRQ } from '@/hooks/data/useItemsRQ';
 import { useItemFilters } from '@/store/useItemFiltersStore';
 import ItemCard from '../items/ItemCard';
-import ItemCardSkeleton from '../items/ItemCardSkeleton';
+import LoadingState from './LoadingState';
 import { filtersAreActive } from '@/lib/utils/isFiltersActive';
 
 const DashboardPage = () => {
@@ -13,13 +13,6 @@ const DashboardPage = () => {
   const { filters } = useItemFilters();
   const hasActiveFilters = filtersAreActive(filters);
 
-  const renderSkeletonGrid = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <ItemCardSkeleton key={i} />
-      ))}
-    </div>
-  );
 
   const renderEmptyState = () =>
     hasActiveFilters ? <EmptyWithFilters /> : <EmptyState />;
@@ -36,11 +29,13 @@ const DashboardPage = () => {
     <section className="space-y-8">
       <DashboardHeader />
       <Section>
-        {loading
-          ? renderSkeletonGrid()
-          : items.length === 0
-          ? renderEmptyState()
-          : renderItemGrid()}
+        {loading ? (
+          <LoadingState />
+        ) : items.length === 0 ? (
+          renderEmptyState()
+        ) : (
+          renderItemGrid()
+        )}
       </Section>
     </section>
   );
