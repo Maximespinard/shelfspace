@@ -31,7 +31,7 @@ Create, organize, and explore your personal collection! With images, categories,
 - Full CRUD for items with image upload
 - Full category CRUD system with color tags and in-place editing
 - Filter & Search (price, date, category, name)
-- Skeleton loading states, animated UI
+- Loading states, animated UI
 - Responsive design + polished UX
 
 ---
