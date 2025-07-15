@@ -27,7 +27,7 @@ const UserNavbar = () => {
     <nav className="w-full border-b px-6 py-3 flex items-center justify-between bg-background">
       <span className="font-bold text-3xl text-primary">ShelfSpace</span>
       <div className="flex items-center gap-4">
-        <span className="text-sm text-muted-foreground">{user?.username}</span>
+        <span className="text-sm text-muted-foreground">{user?.email}</span>
         <Button variant="outline" onClick={handleLogout}>
           Logout
         </Button>

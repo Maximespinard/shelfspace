@@ -22,7 +22,7 @@ export const useCategoriesStore = create<CategoriesStore>((set) => ({
 
   fetchCategories: async () => {
     try {
-      const { data } = await fetchCategoriesApi();
+      const data = await fetchCategoriesApi();
       set({ categories: data });
     } catch (err) {
       handleApiError(err, undefined, 'category');
@@ -32,7 +32,7 @@ export const useCategoriesStore = create<CategoriesStore>((set) => ({
 
   addCategory: async (newCategory) => {
     try {
-      const { data } = await createCategoryApi(newCategory);
+      const data = await createCategoryApi(newCategory);
       set((state) => ({ categories: [...state.categories, data] }));
       handleApiSuccess('Category created!');
     } catch (err) {
@@ -43,7 +43,7 @@ export const useCategoriesStore = create<CategoriesStore>((set) => ({
 
   updateCategory: async (id, updatedCategory) => {
     try {
-      const { data } = await updateCategoryApi(id, updatedCategory);
+      const data = await updateCategoryApi(id, updatedCategory);
       set((state) => ({
         categories: state.categories.map((cat) =>
           cat._id === id ? data : cat
