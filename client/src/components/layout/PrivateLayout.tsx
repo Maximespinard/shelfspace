@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/features/auth/store/useAuthStore';
 import UserNavbar from '@/components/layout/UserNavbar';
-import CategoryModal from '../dashboard/categories/CategoryModal';
-import ItemModal from '../dashboard/items/ItemModal';
+import CategoryModal from '@/features/categories/components/CategoryModal';
+import ItemModal from '@/features/items/components/ItemModal';
 import Footer from './Footer';
 
 const PrivateLayout = () => {

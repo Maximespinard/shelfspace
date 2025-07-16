@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '@/store/useAuthStore';
-import { logoutUserApi } from '@/lib/api/auth';
+import { useAuthStore } from '@/features/auth/store/useAuthStore';
+import { logoutUserApi } from '@/features/auth/api/auth';
 import { Button } from '../ui/shadcn/button';
 import { handleApiError } from '@/lib/utils/handleApiError';
 import { handleApiSuccess } from '@/lib/utils/handleApiSuccess';

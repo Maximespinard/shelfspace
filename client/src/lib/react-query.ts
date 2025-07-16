@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import type { ItemsQueryParams } from '@/types/api';
+import type { ItemsQueryParams } from '@/features/items/types/item.types';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
