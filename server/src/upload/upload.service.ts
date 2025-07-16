@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   S3Client,
   PutObjectCommand,
@@ -6,24 +7,29 @@ import {
 } from '@aws-sdk/client-s3';
 import { extname } from 'path';
 import { randomUUID } from 'crypto';
+import { MinioConfig } from '../config/configuration';
 
 @Injectable()
 export class UploadService {
   private s3: S3Client;
   private bucket: string;
+  private endpoint: string;
 
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
+    const minioConfig = this.configService.get<MinioConfig>('minio')!;
+
     this.s3 = new S3Client({
       region: 'eu-west-1',
-      endpoint: process.env.MINIO_ENDPOINT,
+      endpoint: `http://${minioConfig.endpoint}:${minioConfig.port}`,
       credentials: {
-        accessKeyId: process.env.MINIO_ACCESS_KEY,
-        secretAccessKey: process.env.MINIO_SECRET_KEY,
+        accessKeyId: minioConfig.accessKey,
+        secretAccessKey: minioConfig.secretKey,
       },
       forcePathStyle: true,
     });
 
-    this.bucket = process.env.MINIO_BUCKET || 'covers';
+    this.bucket = minioConfig.bucket;
+    this.endpoint = `http://${minioConfig.endpoint}:${minioConfig.port}`;
   }
 
   async uploadFile(
@@ -44,7 +50,7 @@ export class UploadService {
       }),
     );
 
-    return `${process.env.MINIO_ENDPOINT}/${this.bucket}/${fileName}`;
+    return `${this.endpoint}/${this.bucket}/${fileName}`;
   }
 
   async deleteFile(fileName: string): Promise<void> {

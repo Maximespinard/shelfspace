@@ -13,8 +13,8 @@ import { JwtStrategy } from './guards/jwt.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        secret: config.get('JWT_SECRET'),
-        signOptions: { expiresIn: '15m' },
+        secret: config.get('jwt.secret'),
+        signOptions: { expiresIn: config.get('jwt.accessExpiresIn') },
       }),
     }),
   ],
