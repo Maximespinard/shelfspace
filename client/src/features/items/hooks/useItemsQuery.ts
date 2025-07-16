@@ -1,24 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { 
+import {
   fetchItemsApi,
-  createItemJsonApi,
-  updateItemJsonApi,
+  createItemApi,
+  updateItemApi,
   deleteItemApi,
-  uploadItemImageApi,
-  deleteItemImageApi,
 } from '../api/items';
 import { queryKeys } from '@/lib/react-query';
-import { ItemService } from '../services/item.service';
 import { ErrorService } from '@/services/error.service';
-import type { 
-  ItemWithCategory, 
+import type {
+  ItemWithCategory,
   ItemsQueryParams,
   CreateItemData,
   UpdateItemData,
   ItemsResponse,
 } from '../types/item.types';
-import type { ItemFormSubmitData } from '../types/item.form';
 
 /**
  * Hook to fetch items with filters
@@ -39,34 +35,31 @@ export function useCreateItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (submitData: ItemFormSubmitData) => {
-      // First create the item
-      const item = await createItemJsonApi(submitData.data as CreateItemData);
-      
-      // Then upload image if provided
-      if (submitData.image) {
-        return uploadItemImageApi(item.data._id, submitData.image);
-      }
-      
-      return item;
+    mutationFn: async (formData: FormData) => {
+      return createItemApi(formData);
     },
-    onMutate: async (submitData) => {
+    onMutate: async (formData) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.items.all });
 
+      // Parse FormData to get item data for optimistic update
+      const data = JSON.parse(formData.get('data') as string) as CreateItemData;
+
       // Snapshot previous values for all queries
-      const previousQueries = queryClient.getQueriesData({ queryKey: queryKeys.items.lists() });
+      const previousQueries = queryClient.getQueriesData({
+        queryKey: queryKeys.items.lists(),
+      });
 
       // Optimistically add the new item to all cached queries
       queryClient.setQueriesData(
         { queryKey: queryKeys.items.lists() },
         (old: ItemsResponse | undefined) => {
           if (!old) return old;
-          
+
           // Create optimistic item with temporary ID
           const optimisticItem: ItemWithCategory = {
             _id: `temp-${Date.now()}`,
-            ...submitData.data,
+            ...data,
             category: null, // Will be populated by server
             imageUrl: null,
             createdAt: new Date().toISOString(),
@@ -111,33 +104,26 @@ export function useUpdateItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ 
-      id, 
-      submitData
-    }: { 
-      id: string; 
-      submitData: ItemFormSubmitData;
+    mutationFn: async ({
+      id,
+      formData,
+    }: {
+      id: string;
+      formData: FormData;
     }) => {
-      // Update item data
-      const updatedItem = await updateItemJsonApi(id, submitData.data as UpdateItemData);
-      
-      // Handle image operations
-      const imageOps = ItemService.needsImageOperation(submitData, true);
-      
-      if (imageOps.shouldRemoveImage) {
-        return deleteItemImageApi(id);
-      } else if (imageOps.hasNewImage && submitData.image) {
-        return uploadItemImageApi(id, submitData.image);
-      }
-      
-      return updatedItem;
+      return updateItemApi(id, formData);
     },
-    onMutate: async ({ id, submitData }) => {
+    onMutate: async ({ id, formData }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.items.all });
 
+      // Parse FormData to get item data for optimistic update
+      const data = JSON.parse(formData.get('data') as string) as UpdateItemData;
+
       // Snapshot previous values for all queries
-      const previousQueries = queryClient.getQueriesData({ queryKey: queryKeys.items.lists() });
+      const previousQueries = queryClient.getQueriesData({
+        queryKey: queryKeys.items.lists(),
+      });
 
       // Optimistically update all cached queries
       queryClient.setQueriesData(
@@ -151,9 +137,11 @@ export function useUpdateItem() {
               item._id === id
                 ? {
                     ...item,
-                    ...submitData.data,
+                    ...data,
                     // Keep existing category object if not updating category
-                    category: submitData.data.category ? item.category : item.category,
+                    category: data.category ? item.category : item.category,
+                    // Handle image removal optimistically
+                    imageUrl: data.removeImage ? null : item.imageUrl,
                     updatedAt: new Date().toISOString(),
                   }
                 : item
@@ -175,7 +163,9 @@ export function useUpdateItem() {
       toast.error(message);
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.items.detail(variables.id) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.items.detail(variables.id),
+      });
       toast.success('Item updated successfully!');
     },
     onSettled: () => {
@@ -199,7 +189,9 @@ export function useDeleteItem() {
       await queryClient.cancelQueries({ queryKey: queryKeys.items.all });
 
       // Snapshot previous values for all queries
-      const previousQueries = queryClient.getQueriesData({ queryKey: queryKeys.items.lists() });
+      const previousQueries = queryClient.getQueriesData({
+        queryKey: queryKeys.items.lists(),
+      });
 
       // Optimistically remove the item from all cached queries
       queryClient.setQueriesData(
@@ -209,7 +201,9 @@ export function useDeleteItem() {
 
           return {
             ...old,
-            items: old.items.filter((item: ItemWithCategory) => item._id !== itemId),
+            items: old.items.filter(
+              (item: ItemWithCategory) => item._id !== itemId
+            ),
             total: old.total - 1,
           };
         }
@@ -237,4 +231,3 @@ export function useDeleteItem() {
     },
   });
 }
-

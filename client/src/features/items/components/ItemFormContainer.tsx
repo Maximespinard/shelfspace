@@ -31,21 +31,11 @@ const ItemFormContainer = ({
   async function handleSubmit(formData: FormData) {
     try {
       if (mode === 'add') {
-        // Parse form data to get submit data
-        const data = JSON.parse(formData.get('data') as string);
-        const image = formData.get('image') as File | null;
-        const submitData = { data, image: image || undefined };
-        
-        await createItemMutation.mutateAsync(submitData);
+        await createItemMutation.mutateAsync(formData);
       } else if (itemToEdit) {
-        // Parse form data to get submit data
-        const data = JSON.parse(formData.get('data') as string);
-        const image = formData.get('image') as File | null;
-        const submitData = { data, image: image || undefined };
-        
         await updateItemMutation.mutateAsync({
           id: itemToEdit._id,
-          submitData,
+          formData,
         });
       }
       onSuccess?.();
