@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import DashboardHeader from './DashboardHeader';
 import Section from '@/components/ui/base/Section';
 import EmptyState from './EmptyState';
@@ -23,16 +24,19 @@ const DashboardPage = () => {
   };
 
 
-  const renderEmptyState = () =>
-    hasActiveFilters ? <EmptyWithFilters /> : <EmptyState />;
+  const renderEmptyState = useMemo(() => {
+    return hasActiveFilters ? <EmptyWithFilters /> : <EmptyState />;
+  }, [hasActiveFilters]);
 
-  const renderItemGrid = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-      {items.map((item: ItemWithCategory, index) => (
-        <ItemCard key={item._id} item={item} index={index} />
-      ))}
-    </div>
-  );
+  const renderItemGrid = useMemo(() => {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+        {items.map((item: ItemWithCategory, index) => (
+          <ItemCard key={item._id} item={item} index={index} />
+        ))}
+      </div>
+    );
+  }, [items]);
 
   return (
     <section className="space-y-8">
@@ -41,10 +45,10 @@ const DashboardPage = () => {
         {loading ? (
           <LoadingState />
         ) : items.length === 0 ? (
-          renderEmptyState()
+          renderEmptyState
         ) : (
           <>
-            {renderItemGrid()}
+            {renderItemGrid}
             {total > limit && (
               <Pagination
                 currentPage={page}
