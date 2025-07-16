@@ -21,6 +21,7 @@ import {
   ApiResponse,
   ApiConsumes,
   ApiBody,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -31,6 +32,17 @@ import { ItemsService } from './items.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { ApiResponse as ApiResponseType } from 'src/interfaces/api-response.interface';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import {
+  ItemResponseDto,
+  ItemsResponseDto,
+} from '../common/dto/item-response.dto';
+import { ValidationErrorDto } from '../common/dto/error-response.dto';
+import {
+  UnauthorizedErrorDto,
+  NotFoundErrorDto,
+  BadRequestErrorDto,
+  InternalServerErrorDto,
+} from '../common/dto/common-error-responses.dto';
 
 @ApiTags('Items')
 @ApiBearerAuth()
@@ -41,7 +53,31 @@ export class ItemsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ status: 200, description: 'List of items' })
+  @ApiOperation({
+    summary: 'Get all items',
+    description:
+      'Returns paginated list of items with optional filtering, sorting, and search',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of items',
+    type: ItemsResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid query parameters',
+    type: BadRequestErrorDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedErrorDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: InternalServerErrorDto,
+  })
   @ApiQuery({ name: 'search', required: false, type: String })
   @ApiQuery({ name: 'category', required: false, type: String })
   @ApiQuery({ name: 'minPrice', required: false, type: String })
@@ -97,7 +133,25 @@ export class ItemsController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ status: 200, description: 'Get a single item' })
+  @ApiOperation({
+    summary: 'Get item by ID',
+    description: 'Returns a single item by its ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Get a single item',
+    type: ItemResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedErrorDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Item not found',
+    type: NotFoundErrorDto,
+  })
   async findOne(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,
@@ -113,7 +167,25 @@ export class ItemsController {
   @HttpCode(HttpStatus.CREATED)
   @ApiConsumes('multipart/form-data', 'application/json')
   @UseInterceptors(FileInterceptor('image'))
-  @ApiResponse({ status: 201, description: 'Create a new item' })
+  @ApiOperation({
+    summary: 'Create a new item',
+    description: 'Creates a new item with optional image upload',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Create a new item',
+    type: ItemResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+    type: ValidationErrorDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedErrorDto,
+  })
   async create(
     @Body() body: CreateItemDto | FormDataBody,
     @UploadedFile() file: Express.Multer.File | undefined,
@@ -142,7 +214,30 @@ export class ItemsController {
   @HttpCode(HttpStatus.OK)
   @ApiConsumes('multipart/form-data', 'application/json')
   @UseInterceptors(FileInterceptor('image'))
-  @ApiResponse({ status: 200, description: 'Update an item' })
+  @ApiOperation({
+    summary: 'Update an item',
+    description: 'Updates an existing item with optional image upload',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Update an item',
+    type: ItemResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+    type: ValidationErrorDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedErrorDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Item not found',
+    type: NotFoundErrorDto,
+  })
   async update(
     @Param('id') id: string,
     @Body() body: UpdateItemDto | FormDataBody,
@@ -175,7 +270,13 @@ export class ItemsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Delete an item',
+    description: 'Deletes an item and its associated image',
+  })
   @ApiResponse({ status: 204, description: 'Delete an item' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Item not found' })
   async remove(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,
@@ -188,7 +289,14 @@ export class ItemsController {
   @HttpCode(HttpStatus.OK)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
+  @ApiOperation({
+    summary: 'Upload item image',
+    description: 'Uploads or updates an image for an existing item',
+  })
   @ApiResponse({ status: 200, description: 'Upload or update item image' })
+  @ApiResponse({ status: 400, description: 'Invalid file or missing image' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Item not found' })
   @ApiBody({
     description: 'Image file',
     schema: {
@@ -218,7 +326,13 @@ export class ItemsController {
 
   @Delete(':id/image')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Delete item image',
+    description: 'Removes the image from an existing item',
+  })
   @ApiResponse({ status: 200, description: 'Delete item image' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Item not found' })
   async deleteImage(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,

@@ -5,6 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
 import { UserService } from '../user/user.service';
@@ -18,6 +19,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async register(dto: RegisterDto): Promise<Partial<User>> {
@@ -71,8 +73,14 @@ export class AuthService {
     userId: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync({ sub: userId }, { expiresIn: '1d' }),
-      this.jwtService.signAsync({ sub: userId }, { expiresIn: '7d' }),
+      this.jwtService.signAsync(
+        { sub: userId },
+        { expiresIn: this.configService.get<string>('jwt.accessExpiresIn') },
+      ),
+      this.jwtService.signAsync(
+        { sub: userId },
+        { expiresIn: this.configService.get<string>('jwt.refreshExpiresIn') },
+      ),
     ]);
 
     return { accessToken, refreshToken };
