@@ -4,7 +4,7 @@ import {
   type LoginPayload,
   type LoginSchema,
   loginSchema,
-} from '@/schemas/login.schema';
+} from '../schemas/login.schema';
 
 export function useLoginForm(onSubmit: (data: LoginPayload) => void) {
   const {

@@ -4,7 +4,7 @@ import {
   type RegisterPayload,
   type RegisterSchema,
   registerSchema,
-} from '@/schemas/register.schema';
+} from '../schemas/register.schema';
 
 export function useRegisterForm(onSubmit: (data: RegisterPayload) => void) {
   const {

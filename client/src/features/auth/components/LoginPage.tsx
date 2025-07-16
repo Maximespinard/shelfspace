@@ -4,11 +4,11 @@ import { Label } from '@/components/ui/shadcn/label';
 import { Button } from '@/components/ui/shadcn/button';
 import MotionDiv from '@/components/ui/animated/MotionDiv';
 import Section from '@/components/ui/base/Section';
-import { useLoginForm } from '@/hooks/form/useLoginForm';
-import { type LoginSchema } from '@/schemas/login.schema';
-import { loginUserApi } from '@/lib/api/auth';
+import { useLoginForm } from '../hooks/useLoginForm';
+import { type LoginSchema } from '../schemas/login.schema';
+import { loginUserApi } from '../api/auth';
 import { handleApiError } from '@/lib/utils/handleApiError';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 const LoginPage = () => {
   const { login } = useAuthStore();

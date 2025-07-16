@@ -1,6 +1,6 @@
-import { axiosInstance } from './axios';
-import type { LoginPayload } from '@/schemas/login.schema';
-import type { RegisterPayload } from '@/schemas/register.schema';
+import { axiosInstance } from '@/lib/api/axios';
+import type { LoginPayload } from '../schemas/login.schema';
+import type { RegisterPayload } from '../schemas/register.schema';
 
 export const registerUserApi = async (data: RegisterPayload) => {
   const response = await axiosInstance.post('/auth/register', data);
