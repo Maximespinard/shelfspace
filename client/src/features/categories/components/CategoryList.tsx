@@ -1,4 +1,5 @@
 import { Pencil, Trash2, Loader2 } from 'lucide-react';
+import { memo } from 'react';
 import { Button } from '@/components/ui/shadcn/button';
 import {
   AlertDialog,
@@ -20,7 +21,7 @@ interface Props {
   onDelete: (id: string) => void;
 }
 
-export const CategoryList = ({
+const CategoryListComponent = ({
   categories,
   isDeleting,
   onEdit,
@@ -38,7 +39,7 @@ export const CategoryList = ({
             <div className="flex items-center gap-2">
               <span
                 className="w-4 h-4 rounded-full"
-                style={{ backgroundColor: cat.color }}
+                style={{ '--category-color': cat.color, backgroundColor: 'var(--category-color)' } as React.CSSProperties}
               />
               <span className="text-sm">{cat.name}</span>
             </div>
@@ -81,3 +82,5 @@ export const CategoryList = ({
     </div>
   );
 };
+
+export const CategoryList = memo(CategoryListComponent);
