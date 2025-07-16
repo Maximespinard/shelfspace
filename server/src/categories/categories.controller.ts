@@ -10,7 +10,12 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './category.schema';
@@ -28,7 +33,12 @@ export class CategoriesController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Get all categories',
+    description: 'Returns all categories belonging to the authenticated user',
+  })
   @ApiResponse({ status: 200, description: 'List of all categories' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async findAll(
     @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Category[]>> {
@@ -41,7 +51,13 @@ export class CategoriesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Create a new category',
+    description: 'Creates a new category with name and color',
+  })
   @ApiResponse({ status: 201, description: 'Category created' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async create(
     @Body() dto: CreateCategoryDto,
     @CurrentUser('id') userId: string,
@@ -55,7 +71,14 @@ export class CategoriesController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Update a category',
+    description: 'Updates an existing category name and/or color',
+  })
   @ApiResponse({ status: 200, description: 'Category updated' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Category not found' })
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateCategoryDto,
@@ -70,7 +93,13 @@ export class CategoriesController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Delete a category',
+    description: 'Deletes a category and all its associated items',
+  })
   @ApiResponse({ status: 204, description: 'Category deleted' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Category not found' })
   async remove(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,

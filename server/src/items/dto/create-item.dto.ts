@@ -47,7 +47,7 @@ export class CreateItemDto {
 
   @ApiProperty({
     description: 'Price of the item',
-    example: 1250.50,
+    example: 1250.5,
     minimum: 0,
     maximum: 100000,
     required: false,
