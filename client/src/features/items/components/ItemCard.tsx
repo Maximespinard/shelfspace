@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, memo } from 'react';
 import { Pencil, Trash2, Loader2, Info, RotateCw } from 'lucide-react';
 import { format } from 'date-fns';
 import { useItemModal } from '../hooks/useItemModal';
@@ -173,4 +173,11 @@ const ItemCard = ({ item, index = 0 }: ItemCardProps) => {
   );
 };
 
-export default ItemCard;
+export default memo(ItemCard, (prevProps, nextProps) => {
+  // Only re-render if item data has actually changed
+  return (
+    prevProps.item._id === nextProps.item._id &&
+    prevProps.item.updatedAt === nextProps.item.updatedAt &&
+    prevProps.index === nextProps.index
+  );
+});
