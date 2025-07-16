@@ -1,4 +1,4 @@
-import type { Category, CreateCategoryData } from '@/types/api';
+import type { Category, CreateCategoryData } from '../types/category.types';
 
 /**
  * Service layer for category-related operations

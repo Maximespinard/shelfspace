@@ -5,10 +5,10 @@ import {
   createCategoryApi,
   updateCategoryApi,
   deleteCategoryApi,
-} from '@/lib/api/categories';
+} from '../api/categories';
 import { queryKeys } from '@/lib/react-query';
 import { ErrorService } from '@/services/error.service';
-import type { Category, CreateCategoryData } from '@/types/api';
+import type { Category, CreateCategoryData } from '../types/category.types';
 
 /**
  * Hook to fetch all categories
@@ -45,6 +45,7 @@ export function useCreateCategory() {
           const optimisticCategory: Category = {
             _id: `temp-${Date.now()}`,
             ...newCategory,
+            user: 'temp-user', // Will be replaced by server response
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           };
@@ -154,7 +155,7 @@ export function useDeleteCategory() {
 
       return { previousCategories };
     },
-    onError: (err, id, context) => {
+    onError: (err, _id, context) => {
       // Rollback on error
       if (context?.previousCategories) {
         queryClient.setQueryData(

@@ -13,3 +13,5 @@ export interface CreateCategoryData {
 }
 
 export type UpdateCategoryData = Partial<CreateCategoryData>;
+
+export type FormMode = 'add' | 'edit';

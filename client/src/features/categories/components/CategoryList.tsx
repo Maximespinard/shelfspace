@@ -11,7 +11,7 @@ import {
   AlertDialogDescription,
   AlertDialogTrigger,
 } from '@/components/ui/shadcn/alert-dialog';
-import type { Category } from '@/types/api';
+import type { Category } from '../types/category.types';
 
 interface Props {
   categories: Category[];

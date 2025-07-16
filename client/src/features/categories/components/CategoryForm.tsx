@@ -6,9 +6,9 @@ import { PRESET_COLORS } from '@/constants/colors';
 import {
   type CategorySchema,
   categorySchema,
-} from '@/schemas/category.schema';
-import type { Category, CreateCategoryData } from '@/types/api';
-import type { FormMode } from '@/types/forms';
+} from '../schemas/category.schema';
+import type { Category, CreateCategoryData } from '../types/category.types';
+import type { FormMode } from '../types/category.types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';

@@ -8,14 +8,14 @@ import {
 } from '@/components/ui/shadcn/dialog';
 import { CategoryForm } from './CategoryForm';
 import { CategoryList } from './CategoryList';
-import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
+import { useCategoryModal } from '../hooks/useCategoryModal';
 import {
   useCategoriesQuery,
   useCreateCategory,
   useUpdateCategory,
   useDeleteCategory,
-} from '@/hooks/queries';
-import { type NewCategory } from '@/schemas/category.schema';
+} from '../hooks/useCategoriesQuery';
+import { type NewCategory } from '../schemas/category.schema';
 
 const CategoryModal = () => {
   const { isOpen, mode, categoryToEdit, close, open } = useCategoryModal();

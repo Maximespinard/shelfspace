@@ -1,5 +1,5 @@
-import { axiosInstance } from './axios';
-import type { Category, CreateCategoryData } from '@/types/api';
+import { axiosInstance } from '@/lib/api/axios';
+import type { Category, CreateCategoryData } from '../types/category.types';
 
 export const fetchCategoriesApi = async () => {
   const res = await axiosInstance.get<{ data: Category[] }>('/categories');

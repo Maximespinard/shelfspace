@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import type { Category } from '@/types/api';
-import type { FormMode } from '@/types/forms';
+import type { Category } from '../types/category.types';
+import type { FormMode } from '../types/category.types';
 
 interface CategoryModalStore {
   isOpen: boolean;
