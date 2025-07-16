@@ -1,9 +1,9 @@
 // Items feature exports
 export { default as ItemCard } from './components/ItemCard';
 export { default as ItemFiltersDrawer } from './components/ItemFiltersDrawer';
-export { default as ItemForm } from './components/ItemForm';
-export { default as ItemFormContainer } from './components/ItemFormContainer';
-export { default as ItemImageDropzone } from './components/ItemImageDropzone';
+export { default as ItemForm } from './components/forms/ItemForm';
+export { default as ItemFormContainer } from './components/forms/ItemFormContainer';
+export { default as ItemImageDropzone } from './components/forms/ItemImageDropzone';
 export { default as ItemModal } from './components/ItemModal';
 
 // Hooks

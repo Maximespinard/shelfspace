@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/shadcn/dialog';
-import ItemFormContainer from './ItemFormContainer';
+import ItemFormContainer from './forms/ItemFormContainer';
 import { useItemModal } from '../hooks/useItemModal';
 
 const ItemModal = () => {
