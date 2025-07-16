@@ -7,6 +7,7 @@ import { useItemFilters } from '../../items/store/useItemFiltersStore';
 import ItemCard from '../../items/components/ItemCard';
 import ItemCardSkeleton from '../../items/components/ItemCardSkeleton';
 import { filtersAreActive } from '../../items/utils/isFiltersActive';
+import type { ItemWithCategory } from '../../items/types/item.types';
 
 const DashboardPage = () => {
   const { items, loading } = useItemsRQ();
@@ -26,7 +27,7 @@ const DashboardPage = () => {
 
   const renderItemGrid = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-      {items.map((item) => (
+      {items.map((item: ItemWithCategory) => (
         <ItemCard key={item._id} item={item} />
       ))}
     </div>
