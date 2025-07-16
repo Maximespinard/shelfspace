@@ -108,7 +108,7 @@ const ItemForm: FC<ItemFormProps> = ({
                 <SelectItem key={cat._id} value={cat._id}>
                   <span
                     className="inline-block w-2.5 h-2.5 rounded-full mr-2"
-                    style={{ backgroundColor: cat.color }}
+                    style={{ backgroundColor: cat.color } as React.CSSProperties}
                   />
                   {cat.name}
                 </SelectItem>
