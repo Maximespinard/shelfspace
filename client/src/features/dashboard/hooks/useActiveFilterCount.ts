@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useItemFilters } from '@/store/useItemFiltersStore';
+import { useItemFilters } from '../../items/store/useItemFiltersStore';
 
 export function useActiveFilterCount(): number {
   const { filters } = useItemFilters();

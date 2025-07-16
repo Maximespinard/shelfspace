@@ -4,13 +4,13 @@ import Section from '@/components/ui/base/Section';
 import { Button } from '@/components/ui/shadcn/button';
 import { Input } from '@/components/ui/shadcn/input';
 import MotionDiv from '@/components/ui/animated/MotionDiv';
-import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
-import { useItemModal } from '@/hooks/modals/useItemModal';
-import { useItemFilters } from '@/store/useItemFiltersStore';
+import { useCategoryModal } from '../../categories/hooks/useCategoryModal';
+import { useItemModal } from '../../items/hooks/useItemModal';
+import { useItemFilters } from '../../items/store/useItemFiltersStore';
 import { blurThen } from '@/lib/utils/dom';
-import ItemFiltersDrawer from '../items/ItemFiltersDrawer';
+import ItemFiltersDrawer from '../../items/components/ItemFiltersDrawer';
 import { useMediaQuery } from 'usehooks-ts';
-import { useActiveFilterCount } from '@/hooks/useActiveFilterCount';
+import { useActiveFilterCount } from '../hooks/useActiveFilterCount';
 
 const DashboardHeader = () => {
   const { open: openCategoryModal } = useCategoryModal();

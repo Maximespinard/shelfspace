@@ -1,12 +1,12 @@
-import DashboardHeader from '@/components/dashboard/layout/DashboardHeader';
+import DashboardHeader from './DashboardHeader';
 import Section from '@/components/ui/base/Section';
 import EmptyState from './EmptyState';
 import EmptyWithFilters from './EmptyWithFilters';
-import { useItemsRQ } from '@/hooks/data/useItemsRQ';
-import { useItemFilters } from '@/store/useItemFiltersStore';
-import ItemCard from '../items/ItemCard';
-import ItemCardSkeleton from '../items/ItemCardSkeleton';
-import { filtersAreActive } from '@/lib/utils/isFiltersActive';
+import { useItemsRQ } from '../../items/hooks/useItemsRQ';
+import { useItemFilters } from '../../items/store/useItemFiltersStore';
+import ItemCard from '../../items/components/ItemCard';
+import ItemCardSkeleton from '../../items/components/ItemCardSkeleton';
+import { filtersAreActive } from '../../items/utils/isFiltersActive';
 
 const DashboardPage = () => {
   const { items, loading } = useItemsRQ();
