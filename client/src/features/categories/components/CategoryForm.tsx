@@ -11,7 +11,7 @@ import type { Category, CreateCategoryData } from '../types/category.types';
 import type { FormMode } from '../types/category.types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 interface Props {
   editMode: boolean;
@@ -30,6 +30,19 @@ export const CategoryForm = ({
   cancelEdit,
   categoryToEdit,
 }: Props) => {
+  const defaultValues = useMemo(() => {
+    if (editMode && categoryToEdit) {
+      return {
+        name: categoryToEdit.name,
+        color: categoryToEdit.color || PRESET_COLORS[0],
+      };
+    }
+    return {
+      name: '',
+      color: PRESET_COLORS[0],
+    };
+  }, [editMode, categoryToEdit]);
+
   const {
     register,
     handleSubmit,
@@ -39,27 +52,12 @@ export const CategoryForm = ({
     formState: { errors },
   } = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
-    defaultValues: {
-      name: '',
-      color: PRESET_COLORS[0],
-    },
+    defaultValues,
   });
 
   useEffect(() => {
-    if (editMode && categoryToEdit) {
-      setValue('name', categoryToEdit.name);
-      setValue('color', categoryToEdit.color || PRESET_COLORS[0]);
-    }
-  }, [editMode, categoryToEdit, setValue]);
-
-  useEffect(() => {
-    if (mode === 'add' && !isSubmitting) {
-      reset({
-        name: '',
-        color: PRESET_COLORS[0],
-      });
-    }
-  }, [mode, isSubmitting, reset]);
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
   const selectedColor = watch('color');
 

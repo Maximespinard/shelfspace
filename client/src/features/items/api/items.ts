@@ -5,11 +5,11 @@ import type { ItemWithCategory } from '../types/item.types';
 // API endpoints
 export const fetchItemsApi = async (queryParams: ItemFilters) => {
   const res = await axiosInstance.get('/items', { params: queryParams });
-  return res.data.data; // Extract nested data: { items: ItemWithCategory[], total: number }
+  return res.data; // Response interceptor automatically unwraps { message, data } → data
 };
 
 export const createItemApi = async (data: FormData) => {
-  const res = await axiosInstance.post<{ data: ItemWithCategory }>(
+  const res = await axiosInstance.post<ItemWithCategory>(
     '/items',
     data
   );
@@ -17,7 +17,7 @@ export const createItemApi = async (data: FormData) => {
 };
 
 export const updateItemApi = async (id: string, data: FormData) => {
-  const res = await axiosInstance.patch<{ data: ItemWithCategory }>(
+  const res = await axiosInstance.patch<ItemWithCategory>(
     `/items/${id}`,
     data
   );
@@ -34,7 +34,7 @@ export const uploadItemImageApi = async (id: string, image: File) => {
   const formData = new FormData();
   formData.append('image', image);
 
-  const { data } = await axiosInstance.post<{ data: ItemWithCategory }>(
+  const { data } = await axiosInstance.post<ItemWithCategory>(
     `/items/${id}/image`,
     formData,
     {
@@ -47,7 +47,7 @@ export const uploadItemImageApi = async (id: string, image: File) => {
 };
 
 export const deleteItemImageApi = async (id: string) => {
-  const { data } = await axiosInstance.delete<{ data: ItemWithCategory }>(
+  const { data } = await axiosInstance.delete<ItemWithCategory>(
     `/items/${id}/image`
   );
   return data;
