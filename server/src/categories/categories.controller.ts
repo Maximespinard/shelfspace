@@ -23,6 +23,14 @@ import { CategoriesService } from './categories.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { ApiResponse as ApiResponseType } from 'src/interfaces/api-response.interface';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import {
+  CategoryResponseDto,
+  CategoriesResponseDto,
+} from '../common/dto/category-response.dto';
+import {
+  ErrorResponseDto,
+  ValidationErrorDto,
+} from '../common/dto/error-response.dto';
 
 @ApiTags('Categories')
 @ApiBearerAuth()
@@ -37,8 +45,16 @@ export class CategoriesController {
     summary: 'Get all categories',
     description: 'Returns all categories belonging to the authenticated user',
   })
-  @ApiResponse({ status: 200, description: 'List of all categories' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all categories',
+    type: CategoriesResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
   async findAll(
     @CurrentUser('id') userId: string,
   ): Promise<ApiResponseType<Category[]>> {
@@ -55,9 +71,21 @@ export class CategoriesController {
     summary: 'Create a new category',
     description: 'Creates a new category with name and color',
   })
-  @ApiResponse({ status: 201, description: 'Category created' })
-  @ApiResponse({ status: 400, description: 'Invalid input data' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 201,
+    description: 'Category created',
+    type: CategoryResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+    type: ValidationErrorDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
   async create(
     @Body() dto: CreateCategoryDto,
     @CurrentUser('id') userId: string,
@@ -75,10 +103,26 @@ export class CategoriesController {
     summary: 'Update a category',
     description: 'Updates an existing category name and/or color',
   })
-  @ApiResponse({ status: 200, description: 'Category updated' })
-  @ApiResponse({ status: 400, description: 'Invalid input data' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 404, description: 'Category not found' })
+  @ApiResponse({
+    status: 200,
+    description: 'Category updated',
+    type: CategoryResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+    type: ValidationErrorDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Category not found',
+    type: ErrorResponseDto,
+  })
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateCategoryDto,
@@ -98,8 +142,16 @@ export class CategoriesController {
     description: 'Deletes a category and all its associated items',
   })
   @ApiResponse({ status: 204, description: 'Category deleted' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 404, description: 'Category not found' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Category not found',
+    type: ErrorResponseDto,
+  })
   async remove(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,

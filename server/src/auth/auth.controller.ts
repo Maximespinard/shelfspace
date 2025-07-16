@@ -23,6 +23,15 @@ import { ApiResponse as ApiResponseType } from 'src/interfaces/api-response.inte
 import { SafeUser } from 'src/interfaces/safe-user.interface';
 import { JwtAuthGuard } from './guards/jwt-auth-guard';
 import { AuthThrottlerGuard } from './guards/auth-throttler.guard';
+import {
+  AuthResponseDto,
+  RegisterResponseDto,
+  UserInfoResponseDto,
+} from '../common/dto/auth-response.dto';
+import {
+  ErrorResponseDto,
+  ValidationErrorDto,
+} from '../common/dto/error-response.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -38,10 +47,26 @@ export class AuthController {
     description:
       'Creates a new user account with email, username, and password',
   })
-  @ApiResponse({ status: 201, description: 'User successfully registered' })
-  @ApiResponse({ status: 400, description: 'Invalid input data' })
-  @ApiResponse({ status: 409, description: 'Email or username already exists' })
-  @ApiResponse({ status: 429, description: 'Rate limit exceeded' })
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully registered',
+    type: RegisterResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+    type: ValidationErrorDto,
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Email or username already exists',
+    type: ErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 429,
+    description: 'Rate limit exceeded',
+    type: ErrorResponseDto,
+  })
   async register(@Body() dto: RegisterDto): Promise<ApiResponseType<any>> {
     const user = await this.authService.register(dto);
     return {
@@ -58,10 +83,26 @@ export class AuthController {
     summary: 'User login',
     description: 'Authenticates user and returns access and refresh tokens',
   })
-  @ApiResponse({ status: 200, description: 'Login successful with tokens' })
-  @ApiResponse({ status: 400, description: 'Invalid input data' })
-  @ApiResponse({ status: 401, description: 'Invalid credentials' })
-  @ApiResponse({ status: 429, description: 'Rate limit exceeded' })
+  @ApiResponse({
+    status: 200,
+    description: 'Login successful with tokens',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+    type: ValidationErrorDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid credentials',
+    type: ErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 429,
+    description: 'Rate limit exceeded',
+    type: ErrorResponseDto,
+  })
   async login(@Body() dto: LoginDto): Promise<ApiResponseType<any>> {
     const tokens = await this.authService.login(dto);
     return {
@@ -124,8 +165,16 @@ export class AuthController {
     summary: 'Get current user info',
     description: 'Returns the authenticated user information',
   })
-  @ApiResponse({ status: 200, description: 'Authenticated user info' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 200,
+    description: 'Authenticated user info',
+    type: UserInfoResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
   async getMe(
     @Request() req: { user: { id: string } },
   ): Promise<ApiResponseType<SafeUser>> {

@@ -32,6 +32,14 @@ import { ItemsService } from './items.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { ApiResponse as ApiResponseType } from 'src/interfaces/api-response.interface';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import {
+  ItemResponseDto,
+  ItemsResponseDto,
+} from '../common/dto/item-response.dto';
+import {
+  ErrorResponseDto,
+  ValidationErrorDto,
+} from '../common/dto/error-response.dto';
 
 @ApiTags('Items')
 @ApiBearerAuth()
@@ -47,8 +55,16 @@ export class ItemsController {
     description:
       'Returns paginated list of items with optional filtering, sorting, and search',
   })
-  @ApiResponse({ status: 200, description: 'List of items' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of items',
+    type: ItemsResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
   @ApiQuery({ name: 'search', required: false, type: String })
   @ApiQuery({ name: 'category', required: false, type: String })
   @ApiQuery({ name: 'minPrice', required: false, type: String })
