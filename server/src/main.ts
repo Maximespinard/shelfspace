@@ -43,9 +43,28 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('ShelfSpace API')
-    .setDescription('API for managing user collections')
+    .setDescription(
+      'A comprehensive REST API for managing personal collections. Features include user authentication, item management with image uploads, category organization, and advanced filtering capabilities.',
+    )
     .setVersion('1.0')
-    .addBearerAuth()
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+    .addServer('http://localhost:3000', 'Development server')
+    .addServer('htts://tosetlater', 'Production server')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth',
+    )
+    .addTag('Authentication', 'User registration, login, and token management')
+    .addTag('Items', 'Manage personal collection items with images')
+    .addTag('Categories', 'Organize items into colored categories')
+    .addTag('Upload', 'File upload and image management')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
