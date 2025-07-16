@@ -1,4 +1,4 @@
-import type { ItemFilters } from '@/store/useItemFiltersStore';
+import type { ItemFilters } from '@/features/items/store/useItemFiltersStore';
 
 export const defaultEmptyFilters: ItemFilters = {
   search: '',

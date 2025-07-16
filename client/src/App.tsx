@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
-import HomePage from './components/home/HomePage';
-import LoginPage from './components/login/LoginPage';
-import RegisterPage from './components/register/RegisterPage';
-import DashboardPage from './components/dashboard/layout/DashboardPage';
+import LandingPage from './features/landing/components/LandingPage';
+import LoginPage from './features/auth/components/LoginPage';
+import RegisterPage from './features/auth/components/RegisterPage';
+import DashboardPage from './features/dashboard/components/DashboardPage';
 import PublicLayout from './components/layout/PublicLayout';
-import RequireAuth from './components/protected/RequireAuth';
+import RequireAuth from './features/auth/components/RequireAuth';
 import PrivateLayout from './components/layout/PrivateLayout';
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
     <Routes>
       {/* Public layout */}
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
