@@ -43,17 +43,13 @@ export class UploadService {
     const fileExtension = extname(originalName);
     const fileName = `${randomUUID()}${fileExtension}`;
 
-    // Convert buffer to Uint8Array for AWS SDK v3
-    const uploadBuffer =
-      buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
-
     await this.s3.send(
       new PutObjectCommand({
         Bucket: this.bucket,
         Key: fileName,
-        Body: uploadBuffer,
+        Body: buffer,
         ContentType: mimetype,
-        ContentLength: uploadBuffer.length,
+        ContentLength: buffer.length,
         ACL: 'public-read',
       }),
     );
