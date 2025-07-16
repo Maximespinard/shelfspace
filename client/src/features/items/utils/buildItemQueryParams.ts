@@ -1,5 +1,24 @@
 import { type ItemFilters } from '../store/useItemFiltersStore';
 
+/**
+ * Builds URL query parameters from item filters, excluding default values.
+ * Only includes non-default filter values to keep URLs clean.
+ * 
+ * @param filters - Item filters object from the store
+ * @returns Record of query parameter key-value pairs
+ * 
+ * @example
+ * ```tsx
+ * const params = buildItemQueryParams({
+ *   category: 'electronics',
+ *   search: 'laptop',
+ *   sortBy: 'price',
+ *   order: 'asc',
+ *   page: 2
+ * });
+ * // Returns: { category: 'electronics', search: 'laptop', sortBy: 'price', order: 'asc', page: '2' }
+ * ```
+ */
 export function buildItemQueryParams(
   filters: ItemFilters
 ): Record<string, string> {

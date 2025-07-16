@@ -14,6 +14,24 @@ import { ItemService } from '../services/item.service';
 import type { ItemWithCategory } from '../types/item.types';
 import type { ItemFormValues } from '../types/item.form';
 
+/**
+ * Custom hook that manages item form state including image handling and form validation.
+ * Handles both creation and editing modes with proper form state management.
+ * 
+ * @param onSubmit - Function to call when form is submitted with FormData
+ * @param itemToEdit - Optional item to edit (null/undefined for creation mode)
+ * @returns Form methods, state, and image handling utilities
+ * 
+ * @example
+ * ```tsx
+ * const { register, handleSubmit, errors, isDirty } = useItemForm(
+ *   async (formData) => {
+ *     await createItem(formData);
+ *   },
+ *   itemToEdit
+ * );
+ * ```
+ */
 interface UseItemFormReturn {
   // Form methods
   register: UseFormRegister<ItemFormValues>;

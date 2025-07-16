@@ -2,6 +2,11 @@ import { create } from 'zustand';
 import type { ItemWithCategory } from '../types/item.types';
 import type { FormMode } from '../types/item.form';
 
+/**
+ * Zustand store for managing item modal state.
+ * Handles opening/closing modal and tracking edit mode.
+ */
+
 interface ItemModalStore {
   isOpen: boolean;
   mode: FormMode;

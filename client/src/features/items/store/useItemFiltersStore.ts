@@ -2,6 +2,12 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { defaultEmptyFilters } from '@/constants/filters';
 
+/**
+ * Zustand store for managing item filters and search state.
+ * Handles pagination, sorting, filtering, and search functionality.
+ * Automatically resets pagination when filters change.
+ */
+
 export interface ItemFilters {
   search?: string;
   category?: string;
