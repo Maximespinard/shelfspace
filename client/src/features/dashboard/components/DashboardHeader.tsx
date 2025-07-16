@@ -7,7 +7,7 @@ import MotionDiv from '@/components/ui/animated/MotionDiv';
 import { useCategoryModal } from '../../categories/hooks/useCategoryModal';
 import { useItemModal } from '../../items/hooks/useItemModal';
 import { useItemFilters } from '../../items/store/useItemFiltersStore';
-import { blurThen } from '@/lib/utils/dom';
+import { blurThen } from '@/lib/utils';
 import ItemFiltersDrawer from '../../items/components/ItemFiltersDrawer';
 import { useActiveFilterCount } from '../hooks/useActiveFilterCount';
 import { useResponsiveBreakpoints } from '@/hooks/useResponsiveBreakpoints';

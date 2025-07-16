@@ -2,8 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/features/auth/store/useAuthStore';
 import { logoutUserApi } from '@/features/auth/api/auth';
 import { Button } from '../ui/shadcn/button';
-import { handleApiError } from '@/lib/utils/handleApiError';
-import { handleApiSuccess } from '@/lib/utils/handleApiSuccess';
+import { handleApiError, handleApiSuccess } from '@/lib/api/error-handler';
 import { useResponsiveBreakpoints } from '@/hooks/useResponsiveBreakpoints';
 
 const UserNavbar = () => {

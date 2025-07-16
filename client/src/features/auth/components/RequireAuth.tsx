@@ -2,7 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { fetchMeApi } from '../api/auth';
-import { handleApiError } from '@/lib/utils/handleApiError';
+import { handleApiError } from '@/lib/api/error-handler';
 
 const RequireAuth = ({ children }: { children: React.ReactNode }) => {
   const token = useAuthStore((state) => state.token);

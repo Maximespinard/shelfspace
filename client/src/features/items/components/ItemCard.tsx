@@ -19,7 +19,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '@/components/ui/shadcn/alert-dialog';
-import { blurThen } from '@/lib/utils/dom';
+import { blurThen } from '@/lib/utils';
 
 interface ItemCardProps {
   item: ItemWithCategory;

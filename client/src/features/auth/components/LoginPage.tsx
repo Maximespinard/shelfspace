@@ -7,7 +7,7 @@ import Section from '@/components/ui/base/Section';
 import { useLoginForm } from '../hooks/useLoginForm';
 import { type LoginSchema } from '../schemas/login.schema';
 import { loginUserApi } from '../api/auth';
-import { handleApiError } from '@/lib/utils/handleApiError';
+import { handleApiError } from '@/lib/api/error-handler';
 import { useAuthStore } from '../store/useAuthStore';
 
 const LoginPage = () => {

@@ -7,8 +7,7 @@ import Section from '@/components/ui/base/Section';
 import { useRegisterForm } from '../hooks/useRegisterForm';
 import type { RegisterPayload } from '../schemas/register.schema';
 import { registerUserApi } from '../api/auth';
-import { handleApiError } from '@/lib/utils/handleApiError';
-import { handleApiSuccess } from '@/lib/utils/handleApiSuccess';
+import { handleApiError, handleApiSuccess } from '@/lib/api/error-handler';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
