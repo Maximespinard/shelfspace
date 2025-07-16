@@ -7,6 +7,7 @@ import { useOutsideClick } from '@/hooks/useOutsideClick';
 import type { ItemWithCategory } from '../types/item.types';
 import { Button } from '@/components/ui/shadcn/button';
 import { Badge } from '@/components/ui/shadcn/badge';
+import MotionDiv from '@/components/ui/animated/MotionDiv';
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -22,9 +23,10 @@ import { blurThen } from '@/lib/utils/dom';
 
 interface ItemCardProps {
   item: ItemWithCategory;
+  index?: number;
 }
 
-const ItemCard = ({ item }: ItemCardProps) => {
+const ItemCard = ({ item, index = 0 }: ItemCardProps) => {
   const { open, isOpen: isItemModalOpen } = useItemModal();
   const deleteItemMutation = useDeleteItem();
 
@@ -43,10 +45,11 @@ const ItemCard = ({ item }: ItemCardProps) => {
   };
 
   return (
-    <div
-      ref={cardRef}
-      className="[perspective:1000px] w-full h-[380px] relative"
-    >
+    <MotionDiv variant="zoomIn" delay={index * 0.05}>
+      <div
+        ref={cardRef}
+        className="[perspective:1000px] w-full h-[380px] relative"
+      >
       <div
         className={`transition-transform duration-500 relative w-full h-full [transform-style:preserve-3d] ${
           isFlipped ? '[transform:rotateY(180deg)]' : ''
@@ -56,7 +59,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
         <div className="absolute w-full h-full backface-hidden rounded-xl overflow-hidden shadow-sm border bg-white flex flex-col">
           <div className="aspect-square bg-muted overflow-hidden">
             <img
-              src={item.imageUrl ?? '/placeholder.jpg'}
+              src={item.imageUrl ?? '/item-placeholder.svg'}
               alt={item.title}
               className="w-full h-full object-cover"
             />
@@ -166,6 +169,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
         </div>
       </div>
     </div>
+    </MotionDiv>
   );
 };
 

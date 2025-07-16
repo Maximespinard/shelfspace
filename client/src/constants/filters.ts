@@ -9,4 +9,6 @@ export const defaultEmptyFilters: ItemFilters = {
   maxPrice: '',
   startDate: '',
   endDate: '',
+  page: 1,
+  limit: 12,
 };

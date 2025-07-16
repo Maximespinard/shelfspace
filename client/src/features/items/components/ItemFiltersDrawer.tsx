@@ -72,6 +72,13 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
     reset(defaultEmptyFilters);
   };
 
+  // Reset form to active filters when dialog closes without applying
+  useEffect(() => {
+    if (!open) {
+      reset(filters);
+    }
+  }, [open, reset, filters]);
+
   const today = new Date().toISOString().split('T')[0];
 
   return (

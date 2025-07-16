@@ -31,7 +31,7 @@ const PrivateLayout = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <UserNavbar />
-      <main className="flex-1 px-6 py-6 max-w-7xl w-full mx-auto">
+      <main className="flex-1 px-6 py-6 max-w-7xl w-full mx-auto pt-20">
         <Outlet />
         <CategoryModal />
         <ItemModal />

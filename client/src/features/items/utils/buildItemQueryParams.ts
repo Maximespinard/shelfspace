@@ -12,6 +12,8 @@ export function buildItemQueryParams(
     maxPrice,
     startDate,
     endDate,
+    page,
+    limit,
   } = filters;
 
   const query: Record<string, string> = {};
@@ -24,6 +26,8 @@ export function buildItemQueryParams(
   if (maxPrice && parseInt(maxPrice) > 0) query.maxPrice = String(maxPrice);
   if (startDate) query.startDate = startDate;
   if (endDate) query.endDate = endDate;
+  if (page && page > 1) query.page = String(page);
+  if (limit && limit !== 12) query.limit = String(limit);
 
   return query;
 }

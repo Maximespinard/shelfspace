@@ -9,8 +9,8 @@ import { useItemModal } from '../../items/hooks/useItemModal';
 import { useItemFilters } from '../../items/store/useItemFiltersStore';
 import { blurThen } from '@/lib/utils/dom';
 import ItemFiltersDrawer from '../../items/components/ItemFiltersDrawer';
-import { useMediaQuery } from 'usehooks-ts';
 import { useActiveFilterCount } from '../hooks/useActiveFilterCount';
+import { useResponsiveBreakpoints } from '@/hooks/useResponsiveBreakpoints';
 
 const DashboardHeader = () => {
   const { open: openCategoryModal } = useCategoryModal();
@@ -18,18 +18,19 @@ const DashboardHeader = () => {
   const { filters, setFilter } = useItemFilters();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const isMobile = useMediaQuery('(max-width: 640px)');
-
   const activeFilterCount = useActiveFilterCount();
+  const { isMobile, isTablet, isDesktop } = useResponsiveBreakpoints();
 
   return (
-    <Section>
-      <MotionDiv variant="fadeInDown" className="flex flex-col gap-6">
+    <Section className="py-6 sticky top-16 bg-background z-40">
+      <MotionDiv variant="fadeInDown" className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-center text-primary">
           My Collection
         </h2>
+        
 
-        {isMobile ? (
+        {/* Mobile: Vertical layout */}
+        {isMobile && (
           <div className="flex flex-col gap-3 w-full">
             <Button
               className="h-12 w-full"
@@ -72,10 +73,13 @@ const DashboardHeader = () => {
               onChange={(e) => setFilter('search', e.target.value)}
             />
           </div>
-        ) : (
-          <div className="flex flex-col gap-6">
-            <div className="flex justify-between items-end gap-4 flex-wrap">
-              <div className="flex gap-3 flex-wrap">
+        )}
+
+        {/* Tablet: Two rows */}
+        {isTablet && (
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between items-center gap-4">
+              <div className="flex gap-3">
                 <Button
                   variant="outline"
                   className="h-12"
@@ -114,13 +118,61 @@ const DashboardHeader = () => {
               </Button>
             </div>
 
-            <div className="w-full max-w-xl mx-auto mt-10">
-              <Input
-                placeholder="Search items..."
-                className="h-12 w-full"
-                value={filters.search}
-                onChange={(e) => setFilter('search', e.target.value)}
-              />
+            <Input
+              placeholder="Search items..."
+              className="h-12 w-full"
+              value={filters.search}
+              onChange={(e) => setFilter('search', e.target.value)}
+            />
+          </div>
+        )}
+
+        {/* Desktop: Single row */}
+        {isDesktop && (
+          <div className="flex items-center gap-4">
+            <Input
+              placeholder="Search items..."
+              className="h-12 flex-1 max-w-2xl"
+              value={filters.search}
+              onChange={(e) => setFilter('search', e.target.value)}
+            />
+
+            <Button
+              variant="outline"
+              className="h-12"
+              onClick={(e) => {
+                openCategoryModal('add');
+                blurThen(e);
+              }}
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Manage Categories
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-12 justify-start"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <SlidersHorizontal className="w-4 h-4 mr-2" />
+              Filters
+              {activeFilterCount > 0 && (
+                <span className="ml-2 text-xs text-muted-foreground">
+                  ({activeFilterCount})
+                </span>
+              )}
+            </Button>
+
+            <div className="ml-auto">
+              <Button
+                className="h-12 px-5"
+                onClick={(e) => {
+                  openItemModal('add');
+                  blurThen(e);
+                }}
+              >
+                + Add New Item
+              </Button>
             </div>
           </div>
         )}
