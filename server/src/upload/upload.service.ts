@@ -18,9 +18,12 @@ export class UploadService {
   constructor(private readonly configService: ConfigService) {
     const minioConfig = this.configService.get<MinioConfig>('minio')!;
 
+    const protocol = minioConfig.useSSL ? 'https' : 'http';
+    const endpoint = `${protocol}://${minioConfig.endpoint}:${minioConfig.port}`;
+
     this.s3 = new S3Client({
       region: 'eu-west-1',
-      endpoint: `http://${minioConfig.endpoint}:${minioConfig.port}`,
+      endpoint: endpoint,
       credentials: {
         accessKeyId: minioConfig.accessKey,
         secretAccessKey: minioConfig.secretKey,
@@ -29,7 +32,7 @@ export class UploadService {
     });
 
     this.bucket = minioConfig.bucket;
-    this.endpoint = `http://${minioConfig.endpoint}:${minioConfig.port}`;
+    this.endpoint = endpoint;
   }
 
   async uploadFile(
@@ -40,12 +43,17 @@ export class UploadService {
     const fileExtension = extname(originalName);
     const fileName = `${randomUUID()}${fileExtension}`;
 
+    // Convert buffer to Uint8Array for AWS SDK v3
+    const uploadBuffer =
+      buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+
     await this.s3.send(
       new PutObjectCommand({
         Bucket: this.bucket,
         Key: fileName,
-        Body: buffer,
+        Body: uploadBuffer,
         ContentType: mimetype,
+        ContentLength: uploadBuffer.length,
         ACL: 'public-read',
       }),
     );

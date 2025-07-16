@@ -90,8 +90,19 @@ export class ItemsService {
     let imageUrl: string | undefined;
 
     if (file) {
+      // Convert object-like buffer back to proper Buffer
+      let bufferData: Buffer;
+      if (Buffer.isBuffer(file.buffer)) {
+        bufferData = file.buffer;
+      } else if (file.buffer && typeof file.buffer === 'object') {
+        // Handle case where buffer is an object with numeric keys
+        bufferData = Buffer.from(Object.values(file.buffer));
+      } else {
+        throw new Error('Invalid file buffer');
+      }
+
       imageUrl = await this.uploadService.uploadFile(
-        file.buffer,
+        bufferData,
         file.originalname,
         file.mimetype,
       );
