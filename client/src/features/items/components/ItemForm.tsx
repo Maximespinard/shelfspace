@@ -22,8 +22,8 @@ import { Button } from '@/components/ui/shadcn/button';
 import { Label } from '@/components/ui/shadcn/label';
 
 import ItemImageDropzone from './ItemImageDropzone';
-import type { ItemFormValues, FormMode } from '@/types/forms';
-import type { Category } from '@/types/api';
+import type { ItemFormValues, FormMode } from '../types/item.form';
+import type { Category } from '../../categories/types/category.types';
 
 interface ItemFormProps {
   // Form state

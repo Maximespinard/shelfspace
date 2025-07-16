@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from '@/components/ui/shadcn/dialog';
 import ItemFormContainer from './ItemFormContainer';
-import { useItemModal } from '@/hooks/modals/useItemModal';
+import { useItemModal } from '../hooks/useItemModal';
 
 const ItemModal = () => {
   const { isOpen, mode, itemToEdit, close } = useItemModal();

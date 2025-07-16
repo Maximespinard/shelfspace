@@ -1,10 +1,10 @@
-import { axiosInstance } from './axios';
-import type { ItemFilters } from '@/store/useItemFiltersStore';
+import { axiosInstance } from '@/lib/api/axios';
+import type { ItemFilters } from '../store/useItemFiltersStore';
 import type { 
   ItemWithCategory, 
   CreateItemData,
   UpdateItemData 
-} from '@/types/api';
+} from '../types/item.types';
 
 // Existing endpoints (FormData-based)
 export const fetchItemsApi = async (queryParams: ItemFilters) => {

@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react';
 import { Pencil, Trash2, Loader2, Info, RotateCw } from 'lucide-react';
 import { format } from 'date-fns';
-import { useItemModal } from '@/hooks/modals/useItemModal';
-import { useDeleteItem } from '@/hooks/queries';
+import { useItemModal } from '../hooks/useItemModal';
+import { useDeleteItem } from '../hooks/useItemsQuery';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
-import type { ItemWithCategory } from '@/types/api';
+import type { ItemWithCategory } from '../types/item.types';
 import { Button } from '@/components/ui/shadcn/button';
 import { Badge } from '@/components/ui/shadcn/badge';
 import {

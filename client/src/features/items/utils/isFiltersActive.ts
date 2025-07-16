@@ -1,4 +1,4 @@
-import { type ItemFilters } from '@/store/useItemFiltersStore';
+import { type ItemFilters } from '../store/useItemFiltersStore';
 
 export function filtersAreActive(filters: ItemFilters): boolean {
   const defaultFilters: Partial<ItemFilters> = {

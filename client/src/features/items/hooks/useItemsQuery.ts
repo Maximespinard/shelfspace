@@ -7,9 +7,9 @@ import {
   deleteItemApi,
   uploadItemImageApi,
   deleteItemImageApi,
-} from '@/lib/api/items';
+} from '../api/items';
 import { queryKeys } from '@/lib/react-query';
-import { ItemService } from '@/services/item.service';
+import { ItemService } from '../services/item.service';
 import { ErrorService } from '@/services/error.service';
 import type { 
   ItemWithCategory, 
@@ -17,8 +17,8 @@ import type {
   CreateItemData,
   UpdateItemData,
   ItemsResponse,
-} from '@/types/api';
-import type { ItemFormSubmitData } from '@/types/forms';
+} from '../types/item.types';
+import type { ItemFormSubmitData } from '../types/item.form';
 
 /**
  * Hook to fetch items with filters

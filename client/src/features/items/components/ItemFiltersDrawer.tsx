@@ -16,11 +16,11 @@ import {
   SelectValue,
 } from '@/components/ui/shadcn/select';
 import { Button } from '@/components/ui/shadcn/button';
-import { useItemFilters } from '@/store/useItemFiltersStore';
-import { type ItemFiltersSchema } from '@/schemas/itemFilters.schema';
-import { useCategoriesQuery } from '@/hooks/queries';
-import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
-import { useItemFiltersForm } from '@/hooks/form/useItemFiltersForm';
+import { useItemFilters } from '../store/useItemFiltersStore';
+import { type ItemFiltersSchema } from '../schemas/itemFilters.schema';
+import { useCategoriesQuery } from '../../categories/hooks/useCategoriesQuery';
+import { useCategoryModal } from '../../categories/hooks/useCategoryModal';
+import { useItemFiltersForm } from '../hooks/useItemFiltersForm';
 import { useEffect } from 'react';
 import { defaultEmptyFilters } from '@/constants/filters';
 

@@ -1,7 +1,7 @@
 import type {
   ItemWithCategory,
-} from '@/types/api';
-import type { ItemFormValues, ItemFormSubmitData } from '@/types/forms';
+} from '../types/item.types';
+import type { ItemFormValues, ItemFormSubmitData } from '../types/item.form';
 
 /**
  * Service layer for item-related operations

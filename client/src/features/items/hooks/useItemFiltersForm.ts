@@ -3,8 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   type ItemFiltersSchema,
   itemFiltersSchema,
-} from '@/schemas/itemFilters.schema';
-import { useItemFilters } from '@/store/useItemFiltersStore';
+} from '../schemas/itemFilters.schema';
+import { useItemFilters } from '../store/useItemFiltersStore';
 import { isEqual } from 'lodash';
 
 export function useItemFiltersForm(

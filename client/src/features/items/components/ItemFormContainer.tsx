@@ -1,11 +1,12 @@
 import { toast } from 'sonner';
-import { useItemForm } from '@/hooks/form/useItemForm';
-import { useCategoryModal } from '@/hooks/modals/useCategoryModal';
+import { useItemForm } from '../hooks/useItemForm';
+import { useCategoryModal } from '../../categories/hooks/useCategoryModal';
 import { ErrorService } from '@/services/error.service';
-import { useCreateItem, useUpdateItem, useCategoriesQuery } from '@/hooks/queries';
+import { useCreateItem, useUpdateItem } from '../hooks/useItemsQuery';
+import { useCategoriesQuery } from '../../categories/hooks/useCategoriesQuery';
 import ItemForm from './ItemForm';
-import type { ItemWithCategory } from '@/types/api';
-import type { FormMode } from '@/types/forms';
+import type { ItemWithCategory } from '../types/item.types';
+import type { FormMode } from '../types/item.form';
 
 interface ItemFormContainerProps {
   mode: FormMode;

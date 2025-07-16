@@ -1,6 +1,7 @@
-import { useItemFilters } from '@/store/useItemFiltersStore';
-import { buildItemQueryParams } from '@/lib/utils/buildItemQueryParams';
-import { useItemsQuery } from '@/hooks/queries';
+import { useItemFilters } from '../store/useItemFiltersStore';
+import { buildItemQueryParams } from '../utils/buildItemQueryParams';
+import { useItemsQuery } from './useItemsQuery';
+import type { ItemWithCategory } from '../types/item.types';
 
 /**
  * Hook to fetch items using React Query

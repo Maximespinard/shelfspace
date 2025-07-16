@@ -9,10 +9,10 @@ import {
   type FieldErrors,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { itemFormSchema } from '@/schemas/item.schema';
-import { ItemService } from '@/services/item.service';
-import type { ItemWithCategory } from '@/types/api';
-import type { ItemFormValues } from '@/types/forms';
+import { itemFormSchema } from '../schemas/item.schema';
+import { ItemService } from '../services/item.service';
+import type { ItemWithCategory } from '../types/item.types';
+import type { ItemFormValues } from '../types/item.form';
 
 interface UseItemFormReturn {
   // Form methods
