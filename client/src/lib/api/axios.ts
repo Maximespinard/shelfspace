@@ -22,3 +22,26 @@ axiosInstance.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// Response interceptor to unwrap API responses
+axiosInstance.interceptors.response.use(
+  (response) => {
+    // Auto-unwrap responses that follow { message: string, data: T } pattern
+    if (response.data && 
+        typeof response.data === 'object' && 
+        'data' in response.data && 
+        'message' in response.data) {
+      return {
+        ...response,
+        data: response.data.data
+      };
+    }
+    
+    // Return response as-is if it doesn't follow the pattern
+    return response;
+  },
+  (error) => {
+    // Pass through errors unchanged
+    return Promise.reject(error);
+  }
+);
