@@ -79,7 +79,7 @@ const ItemCard = ({ item, index = 0 }: ItemCardProps) => {
               {item.category ? (
                 <Badge
                   className="mt-2"
-                  style={{ backgroundColor: item.category.color }}
+                  style={{ '--category-color': item.category.color, backgroundColor: 'var(--category-color)' } as React.CSSProperties}
                 >
                   {item.category.name}
                 </Badge>
