@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import HomePage from './features/landing/components/HomePage';
+import LandingPage from './features/landing/components/LandingPage';
 import LoginPage from './features/auth/components/LoginPage';
 import RegisterPage from './features/auth/components/RegisterPage';
 import DashboardPage from './features/dashboard/components/DashboardPage';
@@ -12,7 +12,7 @@ function App() {
     <Routes>
       {/* Public layout */}
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>

@@ -2,7 +2,7 @@ import HeroSection from './HeroSection';
 import FeatureCardsSection from './FeatureCardsSection';
 import BottomCtaSection from './BottomCtaSection';
 
-const HomePage = () => {
+const LandingPage = () => {
   return (
     <>
       <HeroSection />
@@ -12,4 +12,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default LandingPage;
