@@ -17,7 +17,7 @@ const LoginPage = () => {
   const onSubmit = async ({ identifier, password }: LoginSchema) => {
     try {
       const res = await loginUserApi({ identifier, password });
-      login(null, res.data.accessToken);
+      login(null, res.accessToken);
       reset();
       navigate('/dashboard', { replace: true });
     } catch (err: unknown) {

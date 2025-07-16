@@ -22,8 +22,7 @@ const RequireAuth = ({ children }: { children: React.ReactNode }) => {
       }
 
       try {
-        const response = await fetchMeApi();
-        const user = response.data;
+        const user = await fetchMeApi();
         login(user, token);
       } catch (err) {
         logout();
