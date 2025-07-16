@@ -29,7 +29,7 @@ export class ItemDto {
 
   @ApiProperty({
     description: 'Item price',
-    example: 1250.50,
+    example: 1250.5,
     required: false,
   })
   price?: number;

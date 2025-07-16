@@ -28,10 +28,13 @@ import {
   RegisterResponseDto,
   UserInfoResponseDto,
 } from '../common/dto/auth-response.dto';
+import { ValidationErrorDto } from '../common/dto/error-response.dto';
 import {
-  ErrorResponseDto,
-  ValidationErrorDto,
-} from '../common/dto/error-response.dto';
+  ConflictErrorDto,
+  TooManyRequestsErrorDto,
+  UnauthorizedErrorDto,
+  ForbiddenErrorDto,
+} from '../common/dto/common-error-responses.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -60,12 +63,12 @@ export class AuthController {
   @ApiResponse({
     status: 409,
     description: 'Email or username already exists',
-    type: ErrorResponseDto,
+    type: ConflictErrorDto,
   })
   @ApiResponse({
     status: 429,
     description: 'Rate limit exceeded',
-    type: ErrorResponseDto,
+    type: TooManyRequestsErrorDto,
   })
   async register(@Body() dto: RegisterDto): Promise<ApiResponseType<any>> {
     const user = await this.authService.register(dto);
@@ -96,12 +99,12 @@ export class AuthController {
   @ApiResponse({
     status: 401,
     description: 'Invalid credentials',
-    type: ErrorResponseDto,
+    type: UnauthorizedErrorDto,
   })
   @ApiResponse({
     status: 429,
     description: 'Rate limit exceeded',
-    type: ErrorResponseDto,
+    type: TooManyRequestsErrorDto,
   })
   async login(@Body() dto: LoginDto): Promise<ApiResponseType<any>> {
     const tokens = await this.authService.login(dto);
@@ -120,7 +123,11 @@ export class AuthController {
     description: 'Invalidates the current refresh token',
   })
   @ApiResponse({ status: 200, description: 'Logout successful' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedErrorDto,
+  })
   async logout(
     @Request() req: { user: { id: string } },
   ): Promise<ApiResponseType<null>> {
@@ -140,9 +147,21 @@ export class AuthController {
     description:
       'Generates new access and refresh tokens using the current refresh token',
   })
-  @ApiResponse({ status: 200, description: 'Refresh token successful' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Invalid refresh token' })
+  @ApiResponse({
+    status: 200,
+    description: 'Refresh token successful',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedErrorDto,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Invalid refresh token',
+    type: ForbiddenErrorDto,
+  })
   async refresh(
     @Request() req: { user: { id: string } },
     @Body() dto: RefreshTokenDto,
@@ -173,7 +192,7 @@ export class AuthController {
   @ApiResponse({
     status: 401,
     description: 'Unauthorized',
-    type: ErrorResponseDto,
+    type: UnauthorizedErrorDto,
   })
   async getMe(
     @Request() req: { user: { id: string } },

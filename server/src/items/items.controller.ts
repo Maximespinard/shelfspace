@@ -36,10 +36,13 @@ import {
   ItemResponseDto,
   ItemsResponseDto,
 } from '../common/dto/item-response.dto';
+import { ValidationErrorDto } from '../common/dto/error-response.dto';
 import {
-  ErrorResponseDto,
-  ValidationErrorDto,
-} from '../common/dto/error-response.dto';
+  UnauthorizedErrorDto,
+  NotFoundErrorDto,
+  BadRequestErrorDto,
+  InternalServerErrorDto,
+} from '../common/dto/common-error-responses.dto';
 
 @ApiTags('Items')
 @ApiBearerAuth()
@@ -61,9 +64,19 @@ export class ItemsController {
     type: ItemsResponseDto,
   })
   @ApiResponse({
+    status: 400,
+    description: 'Invalid query parameters',
+    type: BadRequestErrorDto,
+  })
+  @ApiResponse({
     status: 401,
     description: 'Unauthorized',
-    type: ErrorResponseDto,
+    type: UnauthorizedErrorDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: InternalServerErrorDto,
   })
   @ApiQuery({ name: 'search', required: false, type: String })
   @ApiQuery({ name: 'category', required: false, type: String })
@@ -124,9 +137,21 @@ export class ItemsController {
     summary: 'Get item by ID',
     description: 'Returns a single item by its ID',
   })
-  @ApiResponse({ status: 200, description: 'Get a single item' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 404, description: 'Item not found' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get a single item',
+    type: ItemResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedErrorDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Item not found',
+    type: NotFoundErrorDto,
+  })
   async findOne(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,
@@ -146,9 +171,21 @@ export class ItemsController {
     summary: 'Create a new item',
     description: 'Creates a new item with optional image upload',
   })
-  @ApiResponse({ status: 201, description: 'Create a new item' })
-  @ApiResponse({ status: 400, description: 'Invalid input data' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 201,
+    description: 'Create a new item',
+    type: ItemResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+    type: ValidationErrorDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedErrorDto,
+  })
   async create(
     @Body() body: CreateItemDto | FormDataBody,
     @UploadedFile() file: Express.Multer.File | undefined,
@@ -181,10 +218,26 @@ export class ItemsController {
     summary: 'Update an item',
     description: 'Updates an existing item with optional image upload',
   })
-  @ApiResponse({ status: 200, description: 'Update an item' })
-  @ApiResponse({ status: 400, description: 'Invalid input data' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 404, description: 'Item not found' })
+  @ApiResponse({
+    status: 200,
+    description: 'Update an item',
+    type: ItemResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+    type: ValidationErrorDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedErrorDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Item not found',
+    type: NotFoundErrorDto,
+  })
   async update(
     @Param('id') id: string,
     @Body() body: UpdateItemDto | FormDataBody,

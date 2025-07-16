@@ -27,10 +27,11 @@ import {
   CategoryResponseDto,
   CategoriesResponseDto,
 } from '../common/dto/category-response.dto';
+import { ValidationErrorDto } from '../common/dto/error-response.dto';
 import {
-  ErrorResponseDto,
-  ValidationErrorDto,
-} from '../common/dto/error-response.dto';
+  UnauthorizedErrorDto,
+  NotFoundErrorDto,
+} from '../common/dto/common-error-responses.dto';
 
 @ApiTags('Categories')
 @ApiBearerAuth()
@@ -53,7 +54,7 @@ export class CategoriesController {
   @ApiResponse({
     status: 401,
     description: 'Unauthorized',
-    type: ErrorResponseDto,
+    type: UnauthorizedErrorDto,
   })
   async findAll(
     @CurrentUser('id') userId: string,
@@ -84,7 +85,7 @@ export class CategoriesController {
   @ApiResponse({
     status: 401,
     description: 'Unauthorized',
-    type: ErrorResponseDto,
+    type: UnauthorizedErrorDto,
   })
   async create(
     @Body() dto: CreateCategoryDto,
@@ -116,12 +117,12 @@ export class CategoriesController {
   @ApiResponse({
     status: 401,
     description: 'Unauthorized',
-    type: ErrorResponseDto,
+    type: UnauthorizedErrorDto,
   })
   @ApiResponse({
     status: 404,
     description: 'Category not found',
-    type: ErrorResponseDto,
+    type: NotFoundErrorDto,
   })
   async update(
     @Param('id') id: string,
@@ -145,12 +146,12 @@ export class CategoriesController {
   @ApiResponse({
     status: 401,
     description: 'Unauthorized',
-    type: ErrorResponseDto,
+    type: UnauthorizedErrorDto,
   })
   @ApiResponse({
     status: 404,
     description: 'Category not found',
-    type: ErrorResponseDto,
+    type: NotFoundErrorDto,
   })
   async remove(
     @Param('id') id: string,
