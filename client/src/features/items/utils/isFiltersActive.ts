@@ -23,6 +23,8 @@ export function filtersAreActive(filters: ItemFilters): boolean {
     maxPrice: '',
     startDate: '',
     endDate: '',
+    page: 1,
+    limit: 12,
   };
 
   return Object.entries(filters).some(([key, value]) => {
