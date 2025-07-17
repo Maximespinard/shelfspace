@@ -47,11 +47,7 @@ const DashboardHeader = () => {
   return (
     <Section className="py-6 sticky top-16 bg-background z-40">
       <MotionDiv variant="fadeInDown" className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-center text-primary">
-          My Collection
-        </h2>
         
-
         {/* Mobile: Vertical layout */}
         {isMobile && (
           <div className="flex flex-col gap-3 w-full">
