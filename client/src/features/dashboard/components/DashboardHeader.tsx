@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Settings, SlidersHorizontal } from 'lucide-react';
+import { useDebounce } from 'use-debounce';
 import Section from '@/components/ui/base/Section';
 import { Button } from '@/components/ui/shadcn/button';
 import { Input } from '@/components/ui/shadcn/input';
@@ -18,43 +19,32 @@ const DashboardHeader = () => {
   const { filters, setFilter } = useItemFilters();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState(filters.search || '');
+  const [debouncedSearch] = useDebounce(searchValue, 300);
+
   const activeFilterCount = useActiveFilterCount();
   const { isMobile, isTablet, isDesktop } = useResponsiveBreakpoints();
 
-  // Memoized event handlers
-  const handleAddItem = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    openItemModal('add');
-    blurThen(e);
-  }, [openItemModal]);
+  // Update filter store with debounced search value
+  useEffect(() => {
+    setFilter('search', debouncedSearch);
+  }, [debouncedSearch, setFilter]);
 
-  const handleManageCategories = useCallback(() => {
-    openCategoryModal('add');
-  }, [openCategoryModal]);
-
-  const handleManageCategoriesWithBlur = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    openCategoryModal('add');
-    blurThen(e);
-  }, [openCategoryModal]);
-
-  const handleOpenFilters = useCallback(() => {
-    setDrawerOpen(true);
-  }, []);
-
-  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter('search', e.target.value);
-  }, [setFilter]);
+  // Sync local search state with filter store when filters change externally
+  useEffect(() => {
+    setSearchValue(filters.search || '');
+  }, [filters.search]);
 
   return (
     <Section className="py-6 sticky top-16 bg-background z-40">
       <MotionDiv variant="fadeInDown" className="flex flex-col gap-8">
-        
         {/* Mobile: Vertical layout */}
         {isMobile && (
           <div className="flex flex-col gap-3 w-full">
-            <Button
-              className="h-12 w-full"
-              onClick={handleAddItem}
-            >
+            <Button className="h-12 w-full" onClick={(e) => {
+              openItemModal('add');
+              blurThen(e);
+            }}>
               + Add New Item
             </Button>
 
@@ -62,7 +52,7 @@ const DashboardHeader = () => {
               <Button
                 variant="outline"
                 className="h-12 w-full min-w-0 truncate"
-                onClick={handleManageCategories}
+                onClick={() => openCategoryModal('add')}
               >
                 <Settings className="w-4 h-4 mr-2 shrink-0" />
                 <span className="truncate">Manage Categories</span>
@@ -70,7 +60,7 @@ const DashboardHeader = () => {
               <Button
                 variant="outline"
                 className="h-12 w-full justify-start min-w-0 truncate"
-                onClick={handleOpenFilters}
+                onClick={() => setDrawerOpen(true)}
               >
                 <SlidersHorizontal className="w-4 h-4 mr-2 shrink-0" />
                 <span className="truncate">Filters</span>
@@ -85,8 +75,8 @@ const DashboardHeader = () => {
             <Input
               placeholder="Search items..."
               className="h-12 w-full"
-              value={filters.search}
-              onChange={handleSearchChange}
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
           </div>
         )}
@@ -99,7 +89,10 @@ const DashboardHeader = () => {
                 <Button
                   variant="outline"
                   className="h-12"
-                  onClick={handleManageCategoriesWithBlur}
+                  onClick={(e) => {
+                    openCategoryModal('add');
+                    blurThen(e);
+                  }}
                 >
                   <Settings className="w-4 h-4 mr-2" />
                   Manage Categories
@@ -108,7 +101,7 @@ const DashboardHeader = () => {
                 <Button
                   variant="outline"
                   className="h-12 justify-start"
-                  onClick={handleOpenFilters}
+                  onClick={() => setDrawerOpen(true)}
                 >
                   <SlidersHorizontal className="w-4 h-4 mr-2" />
                   Filters
@@ -120,10 +113,10 @@ const DashboardHeader = () => {
                 </Button>
               </div>
 
-              <Button
-                className="h-12 px-5"
-                onClick={handleAddItem}
-              >
+              <Button className="h-12 px-5" onClick={(e) => {
+                openItemModal('add');
+                blurThen(e);
+              }}>
                 + Add New Item
               </Button>
             </div>
@@ -131,8 +124,8 @@ const DashboardHeader = () => {
             <Input
               placeholder="Search items..."
               className="h-12 w-full"
-              value={filters.search}
-              onChange={handleSearchChange}
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
           </div>
         )}
@@ -143,14 +136,17 @@ const DashboardHeader = () => {
             <Input
               placeholder="Search items..."
               className="h-12 flex-1 max-w-2xl"
-              value={filters.search}
-              onChange={handleSearchChange}
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
 
             <Button
               variant="outline"
               className="h-12"
-              onClick={handleManageCategoriesWithBlur}
+              onClick={(e) => {
+                openCategoryModal('add');
+                blurThen(e);
+              }}
             >
               <Settings className="w-4 h-4 mr-2" />
               Manage Categories
@@ -159,7 +155,7 @@ const DashboardHeader = () => {
             <Button
               variant="outline"
               className="h-12 justify-start"
-              onClick={handleOpenFilters}
+              onClick={() => setDrawerOpen(true)}
             >
               <SlidersHorizontal className="w-4 h-4 mr-2" />
               Filters
@@ -171,10 +167,10 @@ const DashboardHeader = () => {
             </Button>
 
             <div className="ml-auto">
-              <Button
-                className="h-12 px-5"
-                onClick={handleAddItem}
-              >
+              <Button className="h-12 px-5" onClick={(e) => {
+                openItemModal('add');
+                blurThen(e);
+              }}>
                 + Add New Item
               </Button>
             </div>
