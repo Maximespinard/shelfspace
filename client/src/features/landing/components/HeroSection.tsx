@@ -2,6 +2,7 @@ import Section from '@/components/ui/base/Section';
 import MotionDiv from '@/components/ui/animated/MotionDiv';
 import { Button } from '@/components/ui/shadcn/button';
 import { Link } from 'react-router-dom';
+import shelfSpacePreview from '../../../assets/images/shelfspace-preview.png'
 
 const HeroSection = () => {
   return (
@@ -39,11 +40,11 @@ const HeroSection = () => {
         delay={0.4}
         className="flex-1 w-full mt-24 md:mt-0"
       >
-        <div className="w-full max-w-[500px] aspect-video mx-auto">
+        <div className="w-full max-w-[600px] mx-auto">
           <img
-            src="/placeholder-hero.webp"
+            src={shelfSpacePreview}
             alt="Shelf preview"
-            className="w-full h-full object-cover rounded-xl shadow-xl"
+            className="w-full h-auto rounded-xl shadow-xl"
           />
         </div>
       </MotionDiv>
