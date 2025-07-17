@@ -225,7 +225,7 @@ shelfspace/
   <h3>Dashboard</h3>
   <img src="https://i.imgur.com/2ywwf5x.png" alt="Dashboard Overview" width="800" />
   
-  <h3>Advanced Filterst</h3>
+  <h3>Advanced Filters</h3>
   <img src="https://i.imgur.com/2pXz6bt.png" alt="Advanced filters" width="800" />
   
   <h3>Category System</h3>
