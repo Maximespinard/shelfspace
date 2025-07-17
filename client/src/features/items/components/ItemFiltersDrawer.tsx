@@ -57,7 +57,7 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
     control,
     hasChangedFilters,
     hasActiveFilters,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isSubmitting },
   } = useItemFiltersForm(onSubmit);
 
   const searchValue = useWatch({ control, name: 'search' });
@@ -254,7 +254,7 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
               type="button"
               variant="outline"
               onClick={handleReset}
-              disabled={!hasActiveFilters || !isDirty}
+              disabled={!hasActiveFilters}
             >
               Reset Filters
             </Button>
