@@ -223,16 +223,13 @@ shelfspace/
 
 <div align="center">
   <h3>Dashboard</h3>
-  <img src="./screenshots/dashboard.png" alt="Dashboard Overview" width="800" />
+  <img src="https://i.imgur.com/2ywwf5x.png" alt="Dashboard Overview" width="800" />
   
-  <h3>Item Management</h3>
-  <img src="./screenshots/items.png" alt="Item Cards Grid" width="800" />
+  <h3>Advanced Filterst</h3>
+  <img src="https://i.imgur.com/2pXz6bt.png" alt="Advanced filters" width="800" />
   
   <h3>Category System</h3>
-  <img src="./screenshots/categories.png" alt="Category Management" width="800" />
-  
-  <h3>Mobile Experience</h3>
-  <img src="./screenshots/mobile.png" alt="Mobile View" width="300" />
+  <img src="https://i.imgur.com/Abyiavf.png" alt="Category Management" width="800" />
 </div>
 
 ## 🛠️ Development
@@ -273,8 +270,8 @@ shelfspace/
    ```env
    MINIO_ACCESS_KEY=minioadmin
    MINIO_SECRET_KEY=minioadmin
-   MINIO_ENDPOINT=http://localhost:9000
-   MINIO_BUCKET=shelfspace
+   MINIO_ENDPOINT=http://localhost:9001
+   MINIO_BUCKET=covers
    ```
 
    **Frontend `client/.env`**:
@@ -286,20 +283,25 @@ shelfspace/
    **Backend `server/.env`**:
 
    ```env
-   # Database
+   # App Configuration
+   PORT=3000
+   NODE_ENV=development
+
+   # MongoDB
    MONGO_URI=mongodb://localhost:27017/shelfspace
 
-   # JWT
-   JWT_SECRET=your-super-secret-jwt-key
-   JWT_EXPIRES_IN=15m
-   JWT_REFRESH_SECRET=your-super-secret-refresh-key
+   # JWT auth
+   JWT_SECRET=your-super-secret-key-here
+   JWT_ACCESS_EXPIRES_IN=15m
    JWT_REFRESH_EXPIRES_IN=7d
 
-   # MinIO (same as root .env)
-   MINIO_ACCESS_KEY=minioadmin
-   MINIO_SECRET_KEY=minioadmin
-   MINIO_ENDPOINT=http://localhost:9000
-   MINIO_BUCKET=shelfspace
+   # MinIO
+   MINIO_ACCESS_KEY=your-minio-access-key
+   MINIO_SECRET_KEY=your-minio-secret-key
+   MINIO_ENDPOINT=localhost
+   MINIO_PORT=9000
+   MINIO_USE_SSL=false
+   MINIO_BUCKET=covers
    ```
 
 3. **Start infrastructure services**
