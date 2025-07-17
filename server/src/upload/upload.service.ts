@@ -18,9 +18,12 @@ export class UploadService {
   constructor(private readonly configService: ConfigService) {
     const minioConfig = this.configService.get<MinioConfig>('minio')!;
 
+    const protocol = minioConfig.useSSL ? 'https' : 'http';
+    const endpoint = `${protocol}://${minioConfig.endpoint}:${minioConfig.port}`;
+
     this.s3 = new S3Client({
       region: 'eu-west-1',
-      endpoint: `http://${minioConfig.endpoint}:${minioConfig.port}`,
+      endpoint: endpoint,
       credentials: {
         accessKeyId: minioConfig.accessKey,
         secretAccessKey: minioConfig.secretKey,
@@ -29,7 +32,7 @@ export class UploadService {
     });
 
     this.bucket = minioConfig.bucket;
-    this.endpoint = `http://${minioConfig.endpoint}:${minioConfig.port}`;
+    this.endpoint = endpoint;
   }
 
   async uploadFile(
@@ -46,6 +49,7 @@ export class UploadService {
         Key: fileName,
         Body: buffer,
         ContentType: mimetype,
+        ContentLength: buffer.length,
         ACL: 'public-read',
       }),
     );

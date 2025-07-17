@@ -20,6 +20,7 @@ interface Props {
   isSubmitting: boolean;
   cancelEdit?: () => void;
   categoryToEdit?: Category | null;
+  onSuccess?: () => void;
 }
 
 export const CategoryForm = ({
@@ -29,6 +30,7 @@ export const CategoryForm = ({
   isSubmitting,
   cancelEdit,
   categoryToEdit,
+  onSuccess,
 }: Props) => {
   const defaultValues = useMemo(() => {
     if (editMode && categoryToEdit) {
@@ -61,8 +63,16 @@ export const CategoryForm = ({
 
   const selectedColor = watch('color');
 
+  const handleFormSubmit = async (data: CategorySchema) => {
+    await onSubmit(data);
+    if (!editMode) {
+      reset();
+      onSuccess?.();
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div>
         <Input placeholder="Category name" {...register('name')} />
         {errors.name && (

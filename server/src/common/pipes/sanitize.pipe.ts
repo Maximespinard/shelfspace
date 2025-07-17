@@ -17,6 +17,11 @@ export class SanitizePipe implements PipeTransform {
 
     for (const key in sanitized) {
       if (Object.prototype.hasOwnProperty.call(sanitized, key)) {
+        // Skip Buffer objects - they don't need sanitization
+        if (Buffer.isBuffer(sanitized[key])) {
+          continue;
+        }
+
         if (isString(sanitized[key])) {
           // Remove potential XSS and NoSQL injection attempts
           sanitized[key] = sanitized[key]

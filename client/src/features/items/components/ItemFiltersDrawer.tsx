@@ -1,5 +1,4 @@
-import { Controller, useWatch } from 'react-hook-form';
-import { useDebounce } from 'use-debounce';
+import { Controller } from 'react-hook-form';
 import {
   Dialog,
   DialogContent,
@@ -37,8 +36,6 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
   } = useItemFilters();
   const { data: categories = [] } = useCategoriesQuery();
   const { open: openCategoryModal } = useCategoryModal();
-  const { search } = filters;
-
   const onSubmit = (values: ItemFiltersSchema) => {
     (Object.keys(values) as Array<keyof ItemFiltersSchema>).forEach((key) => {
       const value = values[key];
@@ -46,7 +43,6 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
         setFilter(key, String(value));
       }
     });
-    setFilter('search', search || '');
     onClose();
   };
 
@@ -57,15 +53,8 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
     control,
     hasChangedFilters,
     hasActiveFilters,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isSubmitting },
   } = useItemFiltersForm(onSubmit);
-
-  const searchValue = useWatch({ control, name: 'search' });
-  const [debouncedSearch] = useDebounce(searchValue, 300);
-
-  useEffect(() => {
-    setFilter('search', debouncedSearch || '');
-  }, [debouncedSearch, setFilter]);
 
   const handleReset = () => {
     resetStoreFilters();
@@ -254,7 +243,7 @@ const ItemFiltersDrawer = ({ open, onClose }: Props) => {
               type="button"
               variant="outline"
               onClick={handleReset}
-              disabled={!hasActiveFilters || !isDirty}
+              disabled={!hasActiveFilters}
             >
               Reset Filters
             </Button>

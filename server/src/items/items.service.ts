@@ -130,17 +130,32 @@ export class ItemsService {
       throw new NotFoundException(`Item with ID ${id} not found`);
     }
 
-    let imageUrl = existingItem.imageUrl;
+    // Prepare update data by copying and excluding removeImage
+    const { removeImage, ...updateData } = updates;
 
+    // Prepare the final update object
+    const finalUpdate: Record<string, unknown> = { ...updateData };
+
+    // Handle image removal
+    if (removeImage && existingItem.imageUrl) {
+      const filename = existingItem.imageUrl.split('/').pop();
+      if (filename) {
+        await this.uploadService.deleteFile(filename);
+      }
+      finalUpdate.imageUrl = null;
+    }
+
+    // Handle new image upload
     if (file) {
-      if (imageUrl) {
-        const filename = imageUrl.split('/').pop();
+      // Delete old image if exists
+      if (existingItem.imageUrl) {
+        const filename = existingItem.imageUrl.split('/').pop();
         if (filename) {
           await this.uploadService.deleteFile(filename);
         }
       }
 
-      imageUrl = await this.uploadService.uploadFile(
+      finalUpdate.imageUrl = await this.uploadService.uploadFile(
         file.buffer,
         file.originalname,
         file.mimetype,
@@ -148,11 +163,10 @@ export class ItemsService {
     }
 
     const updatedItem = await this.itemModel
-      .findOneAndUpdate(
-        { _id: id, user: userId },
-        { ...updates, imageUrl },
-        { new: true, runValidators: true },
-      )
+      .findOneAndUpdate({ _id: id, user: userId }, finalUpdate, {
+        new: true,
+        runValidators: true,
+      })
       .populate('category')
       .lean();
 
