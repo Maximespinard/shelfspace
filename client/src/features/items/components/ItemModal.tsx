@@ -9,7 +9,12 @@ import ItemFormContainer from './forms/ItemFormContainer';
 import { useItemModal } from '../hooks/useItemModal';
 
 const ItemModal = () => {
-  const { isOpen, mode, itemToEdit, close } = useItemModal();
+  const { isOpen, mode, itemToEdit, close, onSuccessCallback } = useItemModal();
+
+  const handleSuccess = () => {
+    onSuccessCallback?.();
+    close();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={close}>
@@ -29,7 +34,7 @@ const ItemModal = () => {
         <ItemFormContainer
           mode={mode}
           itemToEdit={itemToEdit || undefined}
-          onSuccess={close}
+          onSuccess={handleSuccess}
           onCancel={close}
         />
       </DialogContent>

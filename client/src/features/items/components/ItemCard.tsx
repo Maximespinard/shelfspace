@@ -59,7 +59,7 @@ const ItemCard = ({ item, index = 0 }: ItemCardProps) => {
     <MotionDiv variant="zoomIn" delay={index * 0.05}>
       <div
         ref={cardRef}
-        className="[perspective:1000px] w-full h-[380px] relative"
+        className="[perspective:1000px] w-full h-[320px] relative"
       >
         <div
           className={`transition-transform duration-500 relative w-full h-full [transform-style:preserve-3d] ${
@@ -99,7 +99,9 @@ const ItemCard = ({ item, index = 0 }: ItemCardProps) => {
                   {item.title}
                 </h3>
                 <div className="text-xs text-muted-foreground flex justify-between mt-1">
-                  {item.price !== undefined && <span>${item.price}</span>}
+                  {item.price !== undefined &&
+                    item.price !== null &&
+                    item.price !== 0 && <span>${item.price}</span>}
                   {item.acquisitionDate && (
                     <span>
                       {format(new Date(item.acquisitionDate), 'dd MMM yyyy')}
@@ -165,7 +167,7 @@ const ItemCard = ({ item, index = 0 }: ItemCardProps) => {
                     variant="outline"
                     onClick={(e) => {
                       blurThen(e);
-                      open('edit', item);
+                      open('edit', item, () => setIsFlipped(false));
                     }}
                   >
                     <Pencil className="h-4 w-4" />

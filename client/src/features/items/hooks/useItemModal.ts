@@ -12,7 +12,8 @@ interface ItemModalStore {
   mode: FormMode;
   itemToEdit: ItemWithCategory | null;
   onCloseEdit?: () => void;
-  open: (mode: FormMode, itemWithCategory?: ItemWithCategory | null) => void;
+  onSuccessCallback?: () => void;
+  open: (mode: FormMode, itemWithCategory?: ItemWithCategory | null, onSuccess?: () => void) => void;
   close: () => void;
 }
 
@@ -20,6 +21,17 @@ export const useItemModal = create<ItemModalStore>((set) => ({
   isOpen: false,
   mode: 'add',
   itemToEdit: null,
-  open: (mode, item = null) => set({ isOpen: true, mode, itemToEdit: item }),
-  close: () => set({ isOpen: false, mode: 'add', itemToEdit: null }),
+  onSuccessCallback: undefined,
+  open: (mode, item = null, onSuccess) => set({ 
+    isOpen: true, 
+    mode, 
+    itemToEdit: item,
+    onSuccessCallback: onSuccess 
+  }),
+  close: () => set({ 
+    isOpen: false, 
+    mode: 'add', 
+    itemToEdit: null,
+    onSuccessCallback: undefined 
+  }),
 }));

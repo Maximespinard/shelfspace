@@ -7,7 +7,7 @@ import type {
   UseFormWatch,
   UseFormSetValue,
 } from 'react-hook-form';
-import { Loader2, Plus } from 'lucide-react';
+import { Loader2, Plus, X } from 'lucide-react';
 
 import {
   Select,
@@ -152,13 +152,26 @@ const ItemForm: FC<ItemFormProps> = ({
 
         <div className="space-y-1.5">
           <Label htmlFor="acquisitionDate">Acquisition Date (optional)</Label>
-          <Input
-            id="acquisitionDate"
-            inputSize="lg"
-            type="date"
-            max={new Date().toISOString().split('T')[0]}
-            {...register('acquisitionDate')}
-          />
+          <div className="relative">
+            <Input
+              id="acquisitionDate"
+              inputSize="lg"
+              type="date"
+              max={new Date().toISOString().split('T')[0]}
+              {...register('acquisitionDate')}
+              className="pr-10"
+            />
+            {watch('acquisitionDate') && (
+              <button
+                type="button"
+                onClick={() => setValue('acquisitionDate', '', { shouldDirty: true })}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-md transition-colors"
+                aria-label="Clear date"
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+            )}
+          </div>
           {errors.acquisitionDate && (
             <p className="text-sm text-destructive">
               {errors.acquisitionDate.message}
