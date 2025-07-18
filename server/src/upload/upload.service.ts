@@ -14,6 +14,7 @@ export class UploadService {
   private s3: S3Client;
   private bucket: string;
   private endpoint: string;
+  private publicUrl?: string;
 
   constructor(private readonly configService: ConfigService) {
     const minioConfig = this.configService.get<MinioConfig>('minio')!;
@@ -33,6 +34,7 @@ export class UploadService {
 
     this.bucket = minioConfig.bucket;
     this.endpoint = endpoint;
+    this.publicUrl = minioConfig.publicUrl;
   }
 
   async uploadFile(
@@ -54,6 +56,10 @@ export class UploadService {
       }),
     );
 
+    // Use public URL if available (for Cloudflare R2), otherwise use S3 endpoint
+    if (this.publicUrl) {
+      return `${this.publicUrl}/${fileName}`;
+    }
     return `${this.endpoint}/${this.bucket}/${fileName}`;
   }
 

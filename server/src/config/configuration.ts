@@ -17,6 +17,7 @@ export interface MinioConfig {
   secretKey: string;
   bucket: string;
   useSSL: boolean;
+  publicUrl?: string;
 }
 
 export interface AppConfig {
@@ -49,6 +50,7 @@ export const minioConfig = registerAs(
     secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
     bucket: process.env.MINIO_BUCKET || 'shelfspace',
     useSSL: process.env.MINIO_USE_SSL === 'true',
+    publicUrl: process.env.MINIO_PUBLIC_URL,
   }),
 );
 

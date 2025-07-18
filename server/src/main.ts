@@ -52,7 +52,8 @@ async function bootstrap() {
             "'self'",
             'data:',
             'http://localhost:9000', // MinIO local
-            'https://f52970ecf92014e62775bc23469119c9.r2.cloudflarestorage.com', // R2 for prod
+            'https://f52970ecf92014e62775bc23469119c9.r2.cloudflarestorage.com', // R2 S3 endpoint
+            'https://*.r2.dev', // R2 public URLs
           ],
         },
       },

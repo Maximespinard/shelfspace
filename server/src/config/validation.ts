@@ -56,6 +56,10 @@ class EnvironmentVariables {
   @IsString()
   @IsOptional()
   MINIO_USE_SSL?: string;
+
+  @IsString()
+  @IsOptional()
+  MINIO_PUBLIC_URL?: string;
 }
 
 export function validate(config: Record<string, unknown>) {
