@@ -1,5 +1,7 @@
 # 📚 ShelfSpace
 
+> **🌐 [Live Demo](https://shelfspace-omega.vercel.app)** | **📡 [API](https://shelfspace-production.up.railway.app/api/docs)**
+
 ShelfSpace is a beautifully crafted personal collection manager designed to help you create, organize, and explore your treasured items through an elegant and intuitive interface with advanced filtering, category management, and visual organization tools.
 
 Built with a modern fullstack architecture, ShelfSpace combines a polished user experience with robust backend services to deliver a production-ready application for managing personal collections.
@@ -30,6 +32,7 @@ Built with a modern fullstack architecture, ShelfSpace combines a polished user 
 - **Mongoose ODM** - Elegant MongoDB object modeling
 - **JWT Authentication** - Secure token-based auth with refresh tokens
 - **bcrypt** - Industry-standard password hashing
+- **Sharp** - High-performance image processing and optimization (resize + WebP conversion)
 - **MinIO** - S3-compatible object storage for images
 - **Class Validator** - Decorator-based validation for DTOs
 - **Class Transformer** - Object transformation with decorators
@@ -188,6 +191,7 @@ shelfspace/
 ### 📦 Item Management
 
 - **Create Items** - Add items with title, category, description, price, acquisition date and an image
+- **Optimized Images** - Automatic image compression and WebP conversion for fast loading
 - **Edit Items** - Update any item property with optimistic UI updates
 - **Delete Items** - Soft delete with confirmation dialogs
 - **Item Cards** - Beautiful flip cards revealing details on tap
