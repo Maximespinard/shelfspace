@@ -90,11 +90,7 @@ export class ItemsService {
     let imageUrl: string | undefined;
 
     if (file) {
-      imageUrl = await this.uploadService.uploadFile(
-        file.buffer,
-        file.originalname,
-        file.mimetype,
-      );
+      imageUrl = await this.uploadService.uploadFile(file.buffer);
     }
 
     const newItem = new this.itemModel({ ...data, user: userId, imageUrl });
@@ -155,11 +151,7 @@ export class ItemsService {
         }
       }
 
-      finalUpdate.imageUrl = await this.uploadService.uploadFile(
-        file.buffer,
-        file.originalname,
-        file.mimetype,
-      );
+      finalUpdate.imageUrl = await this.uploadService.uploadFile(file.buffer);
     }
 
     const updatedItem = await this.itemModel
@@ -221,11 +213,7 @@ export class ItemsService {
     }
 
     // Upload new image
-    const imageUrl = await this.uploadService.uploadFile(
-      file.buffer,
-      file.originalname,
-      file.mimetype,
-    );
+    const imageUrl = await this.uploadService.uploadFile(file.buffer);
 
     // Update item with new image URL
     const updatedItem = await this.itemModel

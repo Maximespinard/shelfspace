@@ -5,9 +5,9 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
-import { extname } from 'path';
 import { randomUUID } from 'crypto';
 import { MinioConfig } from '../config/configuration';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class UploadService {
@@ -37,21 +37,29 @@ export class UploadService {
     this.publicUrl = minioConfig.publicUrl;
   }
 
-  async uploadFile(
-    buffer: Buffer,
-    originalName: string,
-    mimetype: string,
-  ): Promise<string> {
-    const fileExtension = extname(originalName);
-    const fileName = `${randomUUID()}${fileExtension}`;
+  async uploadFile(buffer: Buffer): Promise<string> {
+    // Process image with Sharp
+    const processedImageBuffer = await sharp(buffer)
+      .resize(1200, 1200, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp({
+        quality: 85,
+        effort: 4,
+      })
+      .toBuffer();
+
+    // Generate filename with .webp extension
+    const fileName = `${randomUUID()}.webp`;
 
     await this.s3.send(
       new PutObjectCommand({
         Bucket: this.bucket,
         Key: fileName,
-        Body: buffer,
-        ContentType: mimetype,
-        ContentLength: buffer.length,
+        Body: processedImageBuffer,
+        ContentType: 'image/webp',
+        ContentLength: processedImageBuffer.length,
         ACL: 'public-read',
       }),
     );
