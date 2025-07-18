@@ -22,7 +22,7 @@ export class UploadService {
     const endpoint = `${protocol}://${minioConfig.endpoint}:${minioConfig.port}`;
 
     this.s3 = new S3Client({
-      region: 'eu-west-1',
+      region: 'eeur',
       endpoint: endpoint,
       credentials: {
         accessKeyId: minioConfig.accessKey,
