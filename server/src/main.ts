@@ -10,6 +10,36 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
+  // Get configuration values
+  const port = configService.get<number>('app.port') || 3000;
+  const environment =
+    configService.get<string>('app.environment') || 'development';
+  const mongoUri = configService.get<string>('database.uri');
+  const minioEndpoint = configService.get<string>('minio.endpoint');
+  const minioBucket = configService.get<string>('minio.bucket');
+
+  // Startup banner
+  console.log('\n========================================');
+  console.log('🚀 ShelfSpace Server Starting...');
+  console.log('========================================');
+  console.log(`📍 Environment: ${environment}`);
+  console.log(`🔌 Port: ${port}`);
+  console.log(
+    `📁 Database: ${mongoUri ? 'MongoDB configured' : '❌ MongoDB URI not set'}`,
+  );
+  console.log(`💾 Storage: MinIO at ${minioEndpoint || 'Not configured'}`);
+  console.log(`📦 Bucket: ${minioBucket || 'Not configured'}`);
+  console.log(
+    `🔐 JWT: ${configService.get<string>('jwt.secret') ? 'Secret configured' : '❌ JWT secret not set'}`,
+  );
+  console.log(
+    `⏰ Access Token TTL: ${configService.get<string>('jwt.accessExpiresIn')}`,
+  );
+  console.log(
+    `⏰ Refresh Token TTL: ${configService.get<string>('jwt.refreshExpiresIn')}`,
+  );
+  console.log('========================================\n');
+
   // Security middleware
   app.use(
     helmet({
@@ -25,11 +55,13 @@ async function bootstrap() {
     }),
   );
 
+  // CORS configuration
   app.enableCors({
     origin: 'http://localhost:5173',
     credentials: true,
   });
 
+  // Global validation and security pipes
   app.useGlobalPipes(
     new SanitizePipe(),
     new ValidationPipe({
@@ -41,6 +73,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+  // Swagger API documentation setup
   const config = new DocumentBuilder()
     .setTitle('ShelfSpace API')
     .setDescription(
@@ -70,7 +103,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  const port = configService.get<number>('app.port') || 3000;
   await app.listen(port);
+
+  console.log(`\n✅ ShelfSpace Server is running!`);
+  console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
+  console.log(`🏥 Health Check: http://localhost:${port}/api/health`);
+  console.log('========================================\n');
 }
 void bootstrap();
