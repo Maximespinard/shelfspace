@@ -48,7 +48,12 @@ async function bootstrap() {
           defaultSrc: ["'self'"],
           styleSrc: ["'self'", "'unsafe-inline'"],
           scriptSrc: ["'self'"],
-          imgSrc: ["'self'", 'data:', 'http://localhost:9000'], // Allow MinIO images
+          imgSrc: [
+            "'self'",
+            'data:',
+            'http://localhost:9000', // MinIO local
+            'https://f52970ecf92014e62775bc23469119c9.r2.cloudflarestorage.com', // R2 for prod
+          ],
         },
       },
       crossOriginEmbedderPolicy: false,
@@ -57,7 +62,10 @@ async function bootstrap() {
 
   // CORS configuration
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? 'https://shelfspace-omega.vercel.app'
+        : 'http://localhost:5173',
     credentials: true,
   });
 
@@ -82,7 +90,10 @@ async function bootstrap() {
     .setVersion('1.0')
     .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .addServer('http://localhost:3000', 'Development server')
-    .addServer('htts://tosetlater', 'Production server')
+    .addServer(
+      'https://shelfspace-production.up.railway.app',
+      'Production server',
+    )
     .addBearerAuth(
       {
         type: 'http',
@@ -105,9 +116,15 @@ async function bootstrap() {
 
   await app.listen(port);
 
+  // Dynamic base URL for logs
+  const baseUrl =
+    process.env.NODE_ENV === 'production'
+      ? 'https://shelfspace-production.up.railway.app'
+      : `http://localhost:${port}`;
+
   console.log(`\n✅ ShelfSpace Server is running!`);
-  console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
-  console.log(`🏥 Health Check: http://localhost:${port}/api/health`);
+  console.log(`📚 API Documentation: ${baseUrl}/api/docs`);
+  console.log(`🏥 Health Check: ${baseUrl}/api/health`);
   console.log('========================================\n');
 }
 void bootstrap();
