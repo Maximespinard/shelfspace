@@ -369,9 +369,6 @@ npm run start:dev    # Start with hot reload
 npm run start:prod   # Start production server
 npm run build        # Build NestJS application
 npm run lint         # Run ESLint with auto-fix
-npm run test         # Run unit tests
-npm run test:e2e     # Run end-to-end tests
-npm run test:cov     # Generate test coverage
 ```
 
 ## 🏗️ Architecture
