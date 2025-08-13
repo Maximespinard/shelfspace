@@ -1,6 +1,5 @@
 # 📚 ShelfSpace
-
-> **🌐 [Live Demo](https://shelfspace-omega.vercel.app)** | **📡 [API](https://shelfspace-production.up.railway.app/api/docs)**
+ **📡 [API](https://shelfspace-production.up.railway.app/api/docs)**
 
 ShelfSpace is a beautifully crafted personal collection manager designed to help you create, organize, and explore your treasured items through an elegant and intuitive interface with advanced filtering, category management, and visual organization tools.
 
